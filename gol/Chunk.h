@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "Side.h"
+#include "util.h"
 
 #define CHUNK_SIZE 20
 
@@ -22,9 +23,9 @@ private:
 // This isn't just a typedef for std::unordered_map<std::pair<int, int>, Chunk> because it'll encapsulate a Topology
 // TODO have a Topology, once that's implemented
 class ChunkArray {
-  typedef std::unordered_map<std::pair<int, int>, Chunk>::iterator iterator;
-  typedef std::unordered_map<std::pair<int, int>, Chunk>::const_iterator const_iterator;
-  typedef std::unordered_map<std::pair<int, int>, Chunk>::size_type size_type;
+  typedef std::unordered_map<std::pair<int, int>, Chunk, pair_hash>::iterator iterator;
+  typedef std::unordered_map<std::pair<int, int>, Chunk, pair_hash>::const_iterator const_iterator;
+  typedef std::unordered_map<std::pair<int, int>, Chunk, pair_hash>::size_type size_type;
   
 public:
   // How many Chunks are stored?
@@ -47,7 +48,7 @@ public:
   const_iterator end() const noexcept;
   
 private:
-  std::unordered_map<std::pair<int, int>, Chunk> map;
+  std::unordered_map<std::pair<int, int>, Chunk, pair_hash> map;
 };
 
 #endif //GAME_OF_LIFE_CHUNK_H

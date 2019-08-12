@@ -1,7 +1,6 @@
 #ifndef GAME_OF_LIFE_TOPOLOGY_H
 #define GAME_OF_LIFE_TOPOLOGY_H
 
-
 // A Topology represents how Chunks are related to each other in space. It defines valid chunks and allows
 // transformation of invalid chunk coordinates into their equivalent valid ones - i.e. which chunk a chunk with
 // invalid coordinates should behave like for the purpose of interacting with other chunks.
@@ -34,6 +33,5 @@ public:
   const unsigned int width; // The width of the fixed boundary of the topology, in chunks
   const unsigned int height; // The height of the fixed boundary of the topology, in chunks
 };
-
 
 #endif //GAME_OF_LIFE_TOPOLOGY_H
