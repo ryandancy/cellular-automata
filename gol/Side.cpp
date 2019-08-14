@@ -1,26 +1,28 @@
 #include "Side.h"
 #include <utility>
 
+constexpr Side::Side(Value value) : value_(value) {}
+
 Side::operator Value() const {
-  return value;
+  return value_;
 }
 
 constexpr bool Side::operator==(const Side& side) const {
-  return value == side.value;
+  return value_ == side.value_;
 }
 
 constexpr bool Side::operator!=(const Side& side) const {
-  return value != side.value;
+  return value_ != side.value_;
 }
 
 void Side::transform(int& x, int& y, int width, int height) const {
-  if (value == LEFT || value == RIGHT) {
+  if (value_ == LEFT || value_ == RIGHT) {
     std::swap(x, y);
   }
-  if (value == TOP || value == LEFT) {
+  if (value_ == TOP || value_ == LEFT) {
     x = width - x;
   }
-  if (value == TOP || value == RIGHT) {
+  if (value_ == TOP || value_ == RIGHT) {
     y = height - y;
   }
 }

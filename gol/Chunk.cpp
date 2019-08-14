@@ -13,37 +13,37 @@ void Chunk::tick(Side side) {
 // ChunkArray
 
 ChunkArray::size_type ChunkArray::size() {
-  return map.size();
+  return map_.size();
 }
 
 bool ChunkArray::contains(int x, int y) const {
-  return map.count({x, y}) == 1;
+  return map_.count({x, y}) == 1;
 }
 
 Chunk& ChunkArray::get(int x, int y) {
-  return map[{x, y}];
+  return map_[{x, y}];
 }
 
 Chunk& ChunkArray::operator[](std::pair<int, int> xy) {
-  return map[xy];
+  return map_[xy];
 }
 
 bool ChunkArray::erase(int x, int y) {
-  return map.erase({x, y}) > 0;
+  return map_.erase({x, y}) > 0;
 }
 
 ChunkArray::iterator ChunkArray::begin() noexcept {
-  return map.begin();
+  return map_.begin();
 }
 
 ChunkArray::iterator ChunkArray::end() noexcept {
-  return map.end();
+  return map_.end();
 }
 
 ChunkArray::const_iterator ChunkArray::begin() const noexcept {
-  return map.begin();
+  return map_.begin();
 }
 
 ChunkArray::const_iterator ChunkArray::end() const noexcept {
-  return map.end();
+  return map_.end();
 }

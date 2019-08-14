@@ -16,7 +16,7 @@ public:
   void tick(Side side); // like tick(), but only update the cells whose neighbourhoods run off on the given Side
   
 private:
-  bool cells[CHUNK_SIZE][CHUNK_SIZE];
+  bool cells_[CHUNK_SIZE][CHUNK_SIZE];
 };
 
 // A 2D-indexed list of Chunks - a thin wrapper over std::unordered_map
@@ -48,7 +48,7 @@ public:
   const_iterator end() const noexcept;
   
 private:
-  std::unordered_map<std::pair<int, int>, Chunk, pair_hash> map;
+  std::unordered_map<std::pair<int, int>, Chunk, pair_hash> map_;
 };
 
 #endif //GAME_OF_LIFE_CHUNK_H

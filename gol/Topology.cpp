@@ -3,14 +3,14 @@
 
 // BoundedTopology
 
-BoundedTopology::BoundedTopology(int width, int height) : width(width), height(height) {
+BoundedTopology::BoundedTopology(int width, int height) : width_(width), height_(height) {
   if (width <= 0 || height <= 0) {
-    throw std::out_of_range("Cannot create a BoundedTopology with negative or zero width or height");
+    throw std::out_of_range("Cannot create a BoundedTopology with negative or zero width_ or height_");
   }
 }
 
 bool BoundedTopology::valid(int x, int y) const {
-  return x >= 0 && y >= 0 && x <= width && y <= height;
+  return x >= 0 && y >= 0 && x <= width_ && y <= height_;
 }
 
 // FixedTopology
@@ -24,10 +24,10 @@ bool FixedTopology::transform(int& x, int& y) {
 
 bool WrappingTopology::transform(int& x, int& y) {
   // wrapping is accomplished with modulus
-  x %= width;
-  if (x < 0) x += width;
-  y %= height;
-  if (y < 0) y += height;
+  x %= width_;
+  if (x < 0) x += width_;
+  y %= height_;
+  if (y < 0) y += height_;
   return true;
 }
 

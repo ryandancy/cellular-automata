@@ -27,8 +27,8 @@ public:
   bool valid(int x, int y) const override;
   
   // Note: width and height are signed to prevent headaches with arithmetic with signed coordinates
-  const int width; // The width of the boundary of the topology, in chunks
-  const int height; // The height of the boundary of the topology, in chunks
+  const int width_; // The width of the boundary of the topology, in chunks
+  const int height_; // The height of the boundary of the topology, in chunks
 };
 
 // This is a Topology with a fixed size - it simply stops after a certain number of Chunks.

@@ -10,8 +10,7 @@ public:
     BOTTOM, TOP, LEFT, RIGHT
   };
   
-  constexpr Side(Value value = BOTTOM) // NOLINT(google-explicit-constructor,hicpp-explicit-conversions)
-    : value(value) {}
+  constexpr Side(Value value = BOTTOM); // NOLINT(google-explicit-constructor,hicpp-explicit-conversions)
   
   operator Value() const; // NOLINT(google-explicit-constructor,hicpp-explicit-conversions); allow switch
   explicit operator bool() const = delete; // don't allow let if (side)
@@ -24,7 +23,7 @@ public:
   void transform(int& x, int& y, int width, int height) const;
 
 private:
-  Value value;
+  Value value_;
 };
 
 
