@@ -15,6 +15,10 @@ public:
   void tick(); // move the entire Chunk to the next generation
   void tick(Side side); // like tick(), but only update the cells whose neighbourhoods run off on the given Side
   
+  // Get the value of the cell at (x, y).
+  // Throw std::invalid_parameter if x >= CHUNK_SIZE, y >= CHUNK_SIZE, x < 0, or y < 0.
+  bool getCell(int x, int y) const;
+  
 private:
   bool cells_[CHUNK_SIZE][CHUNK_SIZE];
 };

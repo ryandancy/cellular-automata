@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "Chunk.h"
 
 // Chunk
@@ -8,6 +9,13 @@ void Chunk::tick() {
 
 void Chunk::tick(Side side) {
   // TODO
+}
+
+bool Chunk::getCell(int x, int y) const {
+  if (x < 0 || y < 0 || x >= CHUNK_SIZE || y >= CHUNK_SIZE) {
+    throw std::logic_error("Cannot get cell with x or y greater than or equal to CHUNK_SIZE or less than 0");
+  }
+  return cells_[x][y];
 }
 
 // ChunkArray
