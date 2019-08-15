@@ -20,24 +20,29 @@ bool Chunk::getCell(int x, int y) const {
 
 // ChunkArray
 
+ChunkArray::ChunkArray(std::shared_ptr<Topology>& topology) : topology_(topology) {} // copy reference for ourselves
+
 ChunkArray::size_type ChunkArray::size() {
   return map_.size();
 }
 
 bool ChunkArray::contains(int x, int y) const {
-  return map_.count({x, y}) == 1;
+  bool ok = topology_->transform(x, y);
+  return ok && map_.count({x, y}) == 1;
 }
 
 Chunk& ChunkArray::get(int x, int y) {
-  return map_[{x, y}];
-}
-
-Chunk& ChunkArray::operator[](std::pair<int, int> xy) {
-  return map_[xy];
+  bool ok = topology_->transform(x, y);
+  return ok ? map_[{x, y}] : ChunkArray::EMPTY;
 }
 
 bool ChunkArray::erase(int x, int y) {
-  return map_.erase({x, y}) > 0;
+  bool ok = topology_->transform(x, y);
+  if (ok) {
+    return map_.erase({x, y}) > 0;
+  } else {
+    return false;
+  }
 }
 
 ChunkArray::iterator ChunkArray::begin() noexcept {
