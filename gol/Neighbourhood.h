@@ -48,7 +48,7 @@ protected:
   virtual void reinitialize() = 0;
   
   // These are the implementations of move[Left|Right|Down], called after error checking and before changing x_ and y_.
-  // They must update the live count.
+  // They must update the live count, except for the centre cell. move[Left|Right|Down] takes care of that.
   virtual void translateRight() = 0;
   virtual void translateLeft() = 0;
   virtual void translateDown() = 0;

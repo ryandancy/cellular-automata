@@ -40,6 +40,11 @@ int Neighbourhood::moveRight() {
   }
   
   translateRight();
+  
+  // Add the old centre cell and subtract the new centre cell
+  if (getCell(0, 0)) liveCount_++;
+  if (getCell(1, 0)) liveCount_--;
+  
   return ++x_;
 }
 
@@ -51,6 +56,11 @@ int Neighbourhood::moveLeft() {
   }
   
   translateLeft();
+  
+  // Add the old centre cell and subtract the new centre cell
+  if (getCell(0, 0)) liveCount_++;
+  if (getCell(-1, 0)) liveCount_--;
+  
   return --x_;
 }
 
@@ -62,6 +72,11 @@ int Neighbourhood::moveDown() {
   }
   
   translateDown();
+  
+  // Add the old centre cell and subtract the new centre cell
+  if (getCell(0, 0)) liveCount_++;
+  if (getCell(0, 1)) liveCount_--;
+  
   return ++y_;
 }
 
@@ -171,10 +186,6 @@ void VonNeumannNeighbourhood::translateRight() {
     if (getCell(-radius_, dy)) liveCount_--;
     if (getCell(radius_ + 1, dy)) liveCount_++;
   }
-  
-  // Add the old centre cell and subtract the new centre cell
-  if (getCell(0, 0)) liveCount_++;
-  if (getCell(1, 0)) liveCount_--;
 }
 
 void VonNeumannNeighbourhood::translateLeft() {
@@ -183,10 +194,6 @@ void VonNeumannNeighbourhood::translateLeft() {
     if (getCell(radius_, dy)) liveCount_--;
     if (getCell(-radius_ - 1, dy)) liveCount_++;
   }
-  
-  // Add the old centre cell and subtract the new centre cell
-  if (getCell(0, 0)) liveCount_++;
-  if (getCell(-1, 0)) liveCount_--;
 }
 
 void VonNeumannNeighbourhood::translateDown() {
@@ -195,10 +202,6 @@ void VonNeumannNeighbourhood::translateDown() {
     if (getCell(dx, -radius_)) liveCount_--;
     if (getCell(dx, radius_ + 1)) liveCount_++;
   }
-  
-  // Add the old centre cell and subtract the new centre cell
-  if (getCell(0, 0)) liveCount_++;
-  if (getCell(0, 1)) liveCount_--;
 }
 
 // MooreNeighbourhoodType
@@ -238,10 +241,6 @@ void MooreNeighbourhood::translateRight() {
     if (getCell(-getSideDist(dy), dy)) liveCount_--;
     if (getCell(getSideDist(dy) + 1, dy)) liveCount_++;
   }
-  
-  // Add the old centre cell and subtract the new centre cell
-  if (getCell(0, 0)) liveCount_++;
-  if (getCell(0, 1)) liveCount_--;
 }
 
 void MooreNeighbourhood::translateLeft() {
@@ -250,10 +249,6 @@ void MooreNeighbourhood::translateLeft() {
     if (getCell(getSideDist(dy), dy)) liveCount_--;
     if (getCell(-getSideDist(dy) - 1, dy)) liveCount_++;
   }
-  
-  // Add the old centre cell and subtract the new centre cell
-  if (getCell(0, 0)) liveCount_++;
-  if (getCell(-1, 0)) liveCount_--;
 }
 
 void MooreNeighbourhood::translateDown() {
@@ -262,10 +257,6 @@ void MooreNeighbourhood::translateDown() {
     if (getCell(dx, -getSideDist(dx))) liveCount_--;
     if (getCell(dx, getSideDist(dx) + 1)) liveCount_++;
   }
-  
-  // Add the old centre cell and subtract the new centre cell
-  if (getCell(0, 0)) liveCount_++;
-  if (getCell(0, 1)) liveCount_--;
 }
 
 inline int MooreNeighbourhood::getSideDist(int a) {
