@@ -18,19 +18,19 @@ public:
   // Move the Neighbourhood one cell to the right in its chunk, updating the live count. Return the new x coordinate.
   // Throw std::range_error if the x coordinate is already CHUNK_SIZE and we try to move out of the chunk.
   // Throw std::logic_error if the Neighbourhood is not ready (i.e. moveTo has not been called).
-  virtual int moveRight() = 0;
+  int moveRight();
   
   // Move the Neighbourhood one cell to the left in its chunk, updating the live count. Return the new x coordinate.
   // Throw std::range_error if the x coordinate is already 0 and we try to move out of the chunk.
   // Throw std::logic_error if the Neighbourhood is not ready (i.e. moveTo has not been called).
-  virtual int moveLeft() = 0;
+  int moveLeft();
   
   // Move the Neighbourhood one cell down in its chunk, updating the live count. Return the new y coordinate.
   // Throw std::range_error if the y coordinate is already CHUNK_SIZE and we try to move out of the chunk.
   // Throw std::logic_error if the Neighbourhood is not ready (i.e. moveTo has not been called).
-  virtual int moveDown() = 0;
+  int moveDown();
   
-  // virtual int moveUp() = 0; // not necessary for right-to-left scanning
+  // int moveUp(); // not necessary for right-to-left scanning
   
   // Get the live count of the Neighbourhood, i.e. the number of live cells in the Neighbourhood.
   unsigned int getLiveCount() const noexcept;
@@ -46,6 +46,12 @@ protected:
   // Take stock of the Neighbourhood's surroundings from scratch. Recreate the live count.
   // This is called from moveTo(int, int, int, int) to update from scratch.
   virtual void reinitialize() = 0;
+  
+  // These are the implementations of move[Left|Right|Down], called after error checking and before changing x_ and y_.
+  // They must update the live count.
+  virtual void translateRight() = 0;
+  virtual void translateLeft() = 0;
+  virtual void translateDown() = 0;
   
   // Get the value of a cell by its offset from (x_, y_).
   bool getCell(int dx, int dy) const;
@@ -113,9 +119,9 @@ class VonNeumannNeighbourhood : public Neighbourhood {
   friend Neighbourhood* VonNeumannNeighbourhoodType::makeNeighbourhood(ChunkArray& chunkArray) const;
   
 public:
-  int moveRight() override; // Move the VonNeumannNeighbourhood right. Return the new x coordinate.
-  int moveLeft() override; // Move the VonNeumannNeighbourhood left. Return the new x coordinate.
-  int moveDown() override; // Move the VonNeumannNeighbourhood down. Return the new y coordinate.
+  void translateRight() override; // Move the VonNeumannNeighbourhood right. Return the new x coordinate.
+  void translateLeft() override; // Move the VonNeumannNeighbourhood left. Return the new x coordinate.
+  void translateDown() override; // Move the VonNeumannNeighbourhood down. Return the new y coordinate.
   
 protected:
   // Initialize the VonNeumannNeighbourhood with the given ChunkArray and radius.

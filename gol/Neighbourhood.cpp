@@ -32,6 +32,39 @@ unsigned int Neighbourhood::getLiveCount() const noexcept {
   return liveCount_;
 }
 
+int Neighbourhood::moveRight() {
+  // Check that we can move right from here
+  verifyReady();
+  if (x_ == CHUNK_SIZE - 1) {
+    throw std::range_error("Neighbourhood cannot move right: already at maximum for chunk (CHUNK_SIZE - 1)");
+  }
+  
+  translateRight();
+  return ++x_;
+}
+
+int Neighbourhood::moveLeft() {
+  // Check that we can move left from here
+  verifyReady();
+  if (x_ == 0) {
+    throw std::range_error("Neighbourhood cannot move left: already at minimum for chunk (0)");
+  }
+  
+  translateLeft();
+  return --x_;
+}
+
+int Neighbourhood::moveDown() {
+  // Check that we can move down from here
+  verifyReady();
+  if (y_ == CHUNK_SIZE - 1) {
+    throw std::range_error("Neighbourhood cannot move down: already at maximum for chunk (CHUNK_SIZE - 1)");
+  }
+  
+  translateDown();
+  return ++y_;
+}
+
 // Initialize the chunk array, but set ready_ to false
 Neighbourhood::Neighbourhood(ChunkArray& chunkArray)
   : chunkArray_(chunkArray), x_(0), y_(0), chunkX_(0), chunkY_(0), liveCount_(0), ready_(false) {}
@@ -92,7 +125,7 @@ int NeighbourhoodType::getAffectingDistance() const {
   return affectingDistance_;
 }
 
-// Helper functions for error checking
+// Helper function for error checking
 namespace { // local to this file
   void checkRadius(int radius) {
     if (radius <= 0) {
@@ -134,13 +167,7 @@ void VonNeumannNeighbourhood::reinitialize() {
 
 // TODO combine some of moveLeft(), moveRight(), and moveDown() somehow
 
-int VonNeumannNeighbourhood::moveRight() {
-  // Check that we can move right from here
-  verifyReady();
-  if (x_ == CHUNK_SIZE - 1) {
-    throw std::range_error("VonNeumannNeighbourhood cannot move right: already at maximum for chunk (CHUNK_SIZE - 1)");
-  }
-  
+void VonNeumannNeighbourhood::translateRight() {
   // Subtract the left column and add the new right column
   for (int dy = -radius_; dy <= radius_; dy++) {
     if (getCell(-radius_, dy)) liveCount_--;
@@ -150,18 +177,9 @@ int VonNeumannNeighbourhood::moveRight() {
   // Add the old centre cell and subtract the new centre cell
   if (getCell(0, 0)) liveCount_++;
   if (getCell(1, 0)) liveCount_--;
-  
-  // Increment the x coordinate
-  return ++x_;
 }
 
-int VonNeumannNeighbourhood::moveLeft() {
-  // Check that we can move left from here
-  verifyReady();
-  if (x_ == 0) {
-    throw std::range_error("VonNeumannNeighbourhood cannot move left: already at minimum for chunk (0)");
-  }
-  
+void VonNeumannNeighbourhood::translateLeft() {
   // Subtract the right column and add the new left column
   for (int dy = -radius_; dy <= radius_; dy++) {
     if (getCell(radius_, dy)) liveCount_--;
@@ -171,18 +189,9 @@ int VonNeumannNeighbourhood::moveLeft() {
   // Add the old centre cell and subtract the new centre cell
   if (getCell(0, 0)) liveCount_++;
   if (getCell(-1, 0)) liveCount_--;
-  
-  // Decrement the x coordinate
-  return --x_;
 }
 
-int VonNeumannNeighbourhood::moveDown() {
-  // Check that we can move down from here
-  verifyReady();
-  if (y_ == CHUNK_SIZE - 1) {
-    throw std::range_error("VonNeumannNeighbourhood cannot move down: already at maximum for chunk (CHUNK_SIZE - 1)");
-  }
-  
+void VonNeumannNeighbourhood::translateDown() {
   // Subtract the top row and add the new bottom row
   for (int dx = -radius_; dx <= radius_; dx++) {
     if (getCell(dx, -radius_)) liveCount_--;
@@ -192,7 +201,4 @@ int VonNeumannNeighbourhood::moveDown() {
   // Add the old centre cell and subtract the new centre cell
   if (getCell(0, 0)) liveCount_++;
   if (getCell(0, 1)) liveCount_--;
-  
-  // Increment the y coordinate
-  return ++y_;
 }
