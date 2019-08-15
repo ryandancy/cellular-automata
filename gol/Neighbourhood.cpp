@@ -165,8 +165,6 @@ void VonNeumannNeighbourhood::reinitialize() {
   }
 }
 
-// TODO combine some of moveLeft(), moveRight(), and moveDown() somehow
-
 void VonNeumannNeighbourhood::translateRight() {
   // Subtract the left column and add the new right column
   for (int dy = -radius_; dy <= radius_; dy++) {
@@ -201,4 +199,75 @@ void VonNeumannNeighbourhood::translateDown() {
   // Add the old centre cell and subtract the new centre cell
   if (getCell(0, 0)) liveCount_++;
   if (getCell(0, 1)) liveCount_--;
+}
+
+// MooreNeighbourhoodType
+
+// Note: the number of cells in a Moore neighbourhood of radius r is 2r(r+1)
+MooreNeighbourhoodType::MooreNeighbourhoodType(int radius)
+    : NeighbourhoodType(2*radius*(radius+1), radius), radius_(radius) {
+  checkRadius(radius_);
+}
+
+Neighbourhood* MooreNeighbourhoodType::makeNeighbourhood(ChunkArray& chunkArray) const {
+  return new MooreNeighbourhood(chunkArray, radius_);
+}
+
+// MooreNeighbourhood
+
+MooreNeighbourhood::MooreNeighbourhood(ChunkArray& chunkArray, int radius)
+    : Neighbourhood(chunkArray), radius_(radius) {
+  checkRadius(radius_);
+}
+
+void MooreNeighbourhood::reinitialize() {
+  liveCount_ = 0;
+  for (int dy = -radius_; dy <= radius_; dy++) {
+    for (int dx = -getSideDist(dy); dx <= getSideDist(dy); dx++) {
+      if (dx == 0 && dy == 0) continue; // skip centre cell
+      if (getCell(dx, dy)) {
+        liveCount_++;
+      }
+    }
+  }
+}
+
+void MooreNeighbourhood::translateRight() {
+  // Subtract the leftmost part and add the new rightmost part
+  for (int dy = -radius_; dy <= radius_; dy++) {
+    if (getCell(-getSideDist(dy), dy)) liveCount_--;
+    if (getCell(getSideDist(dy) + 1, dy)) liveCount_++;
+  }
+  
+  // Add the old centre cell and subtract the new centre cell
+  if (getCell(0, 0)) liveCount_++;
+  if (getCell(0, 1)) liveCount_--;
+}
+
+void MooreNeighbourhood::translateLeft() {
+  // Subtract the rightmost part and add the new leftmost part
+  for (int dy = -radius_; dy <= radius_; dy++) {
+    if (getCell(getSideDist(dy), dy)) liveCount_--;
+    if (getCell(-getSideDist(dy) - 1, dy)) liveCount_++;
+  }
+  
+  // Add the old centre cell and subtract the new centre cell
+  if (getCell(0, 0)) liveCount_++;
+  if (getCell(-1, 0)) liveCount_--;
+}
+
+void MooreNeighbourhood::translateDown() {
+  // Subtract the topmost part and add the new bottommost part
+  for (int dx = -radius_; dx <= radius_; dx++) {
+    if (getCell(dx, -getSideDist(dx))) liveCount_--;
+    if (getCell(dx, getSideDist(dx) + 1)) liveCount_++;
+  }
+  
+  // Add the old centre cell and subtract the new centre cell
+  if (getCell(0, 0)) liveCount_++;
+  if (getCell(0, 1)) liveCount_--;
+}
+
+inline int MooreNeighbourhood::getSideDist(int a) {
+  return radius_ - abs(a);
 }

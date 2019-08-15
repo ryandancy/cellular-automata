@@ -113,15 +113,10 @@ protected:
 
 // A von Neumann neighbourhood includes diagonal adjacencies. It includes all cells in a square of side length 2r+1
 // centred on the centre cell (except the centre cell itself), where r is the radius.
-// Formally, if this neighbourhood is at (x, y), this neighbourhood includes all points (a, b), a != b, such that
-// abs(a-x) <= r OR abs(b-y) <= r.
+// Formally, if this neighbourhood is at (x, y), this neighbourhood includes all points (a, b), a != x and b != y, such
+// that abs(a-x) <= r OR abs(b-y) <= r.
 class VonNeumannNeighbourhood : public Neighbourhood {
   friend Neighbourhood* VonNeumannNeighbourhoodType::makeNeighbourhood(ChunkArray& chunkArray) const;
-  
-public:
-  void translateRight() override; // Move the VonNeumannNeighbourhood right. Return the new x coordinate.
-  void translateLeft() override; // Move the VonNeumannNeighbourhood left. Return the new x coordinate.
-  void translateDown() override; // Move the VonNeumannNeighbourhood down. Return the new y coordinate.
   
 protected:
   // Initialize the VonNeumannNeighbourhood with the given ChunkArray and radius.
@@ -131,7 +126,56 @@ protected:
   // Regenerate the live count.
   void reinitialize() override;
   
-  // The radius of the neighbourhood.
+  // Update the live count right, left, or down.
+  void translateRight() override;
+  void translateLeft() override;
+  void translateDown() override;
+  
+private:
+  const int radius_;
+};
+
+// MooreNeighbourhood
+
+class MooreNeighbourhood; // forward declaration for MooreNeighbourhoodType
+
+// The NeighbourhoodType representing MooreNeighbourhoods.
+class MooreNeighbourhoodType : public NeighbourhoodType {
+public:
+  // Initialize the MooreNeighbourhoodType creating neighbourhoods with the specified radius.
+  // Throw std::invalid_argument if the radius is negative or zero.
+  explicit MooreNeighbourhoodType(int radius);
+  
+  // Make a MooreNeighbourhood with the radius specified in the constructor.
+  Neighbourhood* makeNeighbourhood(ChunkArray& chunkArray) const override;
+  
+protected:
+  const int radius_;
+};
+
+// A Moore neighbourhood does not include diagonal adjacencies. In my interpretation, it resembles a square on its
+// corner of side length radius+1 centred on the centre cell. Formally, a Moore neighbourhood of radius r centred on
+// (x, y) includes all points (a, b), a != x and b != y, such that abs(a-x) + abs(b-y) <= r.
+class MooreNeighbourhood : public Neighbourhood {
+  friend Neighbourhood* MooreNeighbourhoodType::makeNeighbourhood(ChunkArray& chunkArray) const;
+  
+protected:
+  // Initialize the MooreNeighbourhood with the given ChunkArray and radius.
+  // Throw std::range_error if the radius is negative or zero.
+  MooreNeighbourhood(ChunkArray& chunkArray, int radius);
+  
+  // Regenerate the live count.
+  void reinitialize() override;
+  
+  // Update the live count left, right, or down.
+  void translateRight() override;
+  void translateLeft() override;
+  void translateDown() override;
+  
+private:
+  // Get the distance that the neighbourhood extends sideways in the a-th row or column.
+  inline int getSideDist(int a);
+  
   const int radius_;
 };
 
