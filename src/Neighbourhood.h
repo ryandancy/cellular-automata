@@ -35,6 +35,8 @@ public:
   // Get the live count of the Neighbourhood, i.e. the number of live cells in the Neighbourhood.
   unsigned int getLiveCount() const noexcept;
   
+  virtual ~Neighbourhood() = default;
+  
 protected:
   // Initialize the Neighbourhood with the given ChunkArray. This Neighbourhood must be destroyed before the
   // ChunkArray passed here.
@@ -84,6 +86,11 @@ public:
   // is evaluated if both its x and y coordinates are no more than this far from a non-empty chunk.
   int getAffectingDistance() const;
   
+  // Clone method for polymorphic copying.
+  virtual NeighbourhoodType* clone() const = 0;
+  
+  virtual ~NeighbourhoodType() = default; // prevent memory leaks! save lives!
+  
 protected:
   NeighbourhoodType(unsigned int numCells, int affectingDistance);
   
@@ -106,6 +113,8 @@ public:
   // Make a MooreNeighbourhood with the radius specified in the constructor.
   // (It's not covariant because of compiler weirdness, and we'll never use covariance anyways.)
   Neighbourhood* makeNeighbourhood(ChunkArray& chunkArray) const override;
+  
+  MooreNeighbourhoodType* clone() const override;
 
 protected:
   const int radius_;
@@ -148,6 +157,8 @@ public:
   
   // Make a VonNeumannNeighbourhood with the radius specified in the constructor.
   Neighbourhood* makeNeighbourhood(ChunkArray& chunkArray) const override;
+  
+  VonNeumannNeighbourhoodType* clone() const override;
   
 protected:
   const int radius_;

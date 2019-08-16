@@ -160,6 +160,10 @@ Neighbourhood* MooreNeighbourhoodType::makeNeighbourhood(ChunkArray& chunkArray)
   return new MooreNeighbourhood(chunkArray, radius_);
 }
 
+MooreNeighbourhoodType* MooreNeighbourhoodType::clone() const {
+  return new MooreNeighbourhoodType(*this);
+}
+
 // MooreNeighbourhood
 
 MooreNeighbourhood::MooreNeighbourhood(ChunkArray& chunkArray, int radius)
@@ -214,6 +218,10 @@ VonNeumannNeighbourhoodType::VonNeumannNeighbourhoodType(int radius)
 
 Neighbourhood* VonNeumannNeighbourhoodType::makeNeighbourhood(ChunkArray& chunkArray) const {
   return new VonNeumannNeighbourhood(chunkArray, radius_);
+}
+
+VonNeumannNeighbourhoodType* VonNeumannNeighbourhoodType::clone() const {
+  return new VonNeumannNeighbourhoodType(*this);
 }
 
 // VonNeumannNeighbourhood
