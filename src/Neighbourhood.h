@@ -92,18 +92,18 @@ private:
   const int affectingDistance_;
 };
 
-// VonNeumannNeighbourhood
+// MooreNeighbourhood
 
-class VonNeumannNeighbourhood; // forward declaration for VonNeumannNeighbourhoodType
+class MooreNeighbourhood; // forward declaration for MooreNeighbourhoodType
 
-// The NeighbourhoodType representing VonNeumannNeighbourhoods.
-class VonNeumannNeighbourhoodType : public NeighbourhoodType {
+// The NeighbourhoodType representing MooreNeighbourhoods.
+class MooreNeighbourhoodType : public NeighbourhoodType {
 public:
-  // Initialize a VonNeumannNeighbourhoodType creating neighbourhoods with the specified radius.
+  // Initialize a MooreNeighbourhoodType creating neighbourhoods with the specified radius.
   // Throw std::invalid_argument if radius is not positive.
-  explicit VonNeumannNeighbourhoodType(int radius);
+  explicit MooreNeighbourhoodType(int radius);
   
-  // Make a VonNeumannNeighbourhood with the radius specified in the constructor.
+  // Make a MooreNeighbourhood with the radius specified in the constructor.
   // (It's not covariant because of compiler weirdness, and we'll never use covariance anyways.)
   Neighbourhood* makeNeighbourhood(ChunkArray& chunkArray) const override;
 
@@ -111,17 +111,17 @@ protected:
   const int radius_;
 };
 
-// A von Neumann neighbourhood includes diagonal adjacencies. It includes all cells in a square of side length 2r+1
+// A Moore neighbourhood includes diagonal adjacencies. It includes all cells in a square of side length 2r+1
 // centred on the centre cell (except the centre cell itself), where r is the radius.
 // Formally, if this neighbourhood is at (x, y), this neighbourhood includes all points (a, b), a != x and b != y, such
 // that abs(a-x) <= r OR abs(b-y) <= r.
-class VonNeumannNeighbourhood : public Neighbourhood {
-  friend Neighbourhood* VonNeumannNeighbourhoodType::makeNeighbourhood(ChunkArray& chunkArray) const;
+class MooreNeighbourhood : public Neighbourhood {
+  friend Neighbourhood* MooreNeighbourhoodType::makeNeighbourhood(ChunkArray& chunkArray) const;
   
 protected:
-  // Initialize the VonNeumannNeighbourhood with the given ChunkArray and radius.
+  // Initialize the MooreNeighbourhood with the given ChunkArray and radius.
   // Throw std::invalid_argument if the radius is negative or zero.
-  VonNeumannNeighbourhood(ChunkArray& chunkArray, int radius);
+  MooreNeighbourhood(ChunkArray& chunkArray, int radius);
   
   // Regenerate the live count.
   void reinitialize() override;
@@ -135,34 +135,34 @@ private:
   const int radius_;
 };
 
-// MooreNeighbourhood
+// VonNeumannNeighbourhood
 
-class MooreNeighbourhood; // forward declaration for MooreNeighbourhoodType
+class VonNeumannNeighbourhood; // forward declaration for VonNeumannNeighbourhoodType
 
-// The NeighbourhoodType representing MooreNeighbourhoods.
-class MooreNeighbourhoodType : public NeighbourhoodType {
+// The NeighbourhoodType representing VonNeumannNeighbourhoods.
+class VonNeumannNeighbourhoodType : public NeighbourhoodType {
 public:
-  // Initialize the MooreNeighbourhoodType creating neighbourhoods with the specified radius.
+  // Initialize the VonNeumannNeighbourhoodType creating neighbourhoods with the specified radius.
   // Throw std::invalid_argument if the radius is negative or zero.
-  explicit MooreNeighbourhoodType(int radius);
+  explicit VonNeumannNeighbourhoodType(int radius);
   
-  // Make a MooreNeighbourhood with the radius specified in the constructor.
+  // Make a VonNeumannNeighbourhood with the radius specified in the constructor.
   Neighbourhood* makeNeighbourhood(ChunkArray& chunkArray) const override;
   
 protected:
   const int radius_;
 };
 
-// A Moore neighbourhood does not include diagonal adjacencies. In my interpretation, it resembles a square on its
-// corner of side length radius+1 centred on the centre cell. Formally, a Moore neighbourhood of radius r centred on
-// (x, y) includes all points (a, b), a != x and b != y, such that abs(a-x) + abs(b-y) <= r.
-class MooreNeighbourhood : public Neighbourhood {
-  friend Neighbourhood* MooreNeighbourhoodType::makeNeighbourhood(ChunkArray& chunkArray) const;
+// A von Neumann neighbourhood does not include diagonal adjacencies. In my interpretation, it resembles a square on its
+// corner of side length radius+1 centred on the centre cell. Formally, a von Neumann neighbourhood of radius r centred
+// on (x, y) includes all points (a, b), a != x and b != y, such that abs(a-x) + abs(b-y) <= r.
+class VonNeumannNeighbourhood : public Neighbourhood {
+  friend Neighbourhood* VonNeumannNeighbourhoodType::makeNeighbourhood(ChunkArray& chunkArray) const;
   
 protected:
-  // Initialize the MooreNeighbourhood with the given ChunkArray and radius.
+  // Initialize the VonNeumannNeighbourhood with the given ChunkArray and radius.
   // Throw std::invalid_argument if the radius is negative or zero.
-  MooreNeighbourhood(ChunkArray& chunkArray, int radius);
+  VonNeumannNeighbourhood(ChunkArray& chunkArray, int radius);
   
   // Regenerate the live count.
   void reinitialize() override;

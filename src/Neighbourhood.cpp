@@ -149,66 +149,10 @@ namespace { // local to this file
   }
 }
 
-// VonNeumannNeighbourhoodType
-
-VonNeumannNeighbourhoodType::VonNeumannNeighbourhoodType(int radius)
-    : NeighbourhoodType(radius*radius - 1, radius), radius_(radius) {
-  checkRadius(radius_);
-}
-
-Neighbourhood* VonNeumannNeighbourhoodType::makeNeighbourhood(ChunkArray& chunkArray) const {
-  return new VonNeumannNeighbourhood(chunkArray, radius_);
-}
-
-// VonNeumannNeighbourhood
-
-VonNeumannNeighbourhood::VonNeumannNeighbourhood(ChunkArray& chunkArray, int radius)
-    : Neighbourhood(chunkArray), radius_(radius) {
-  checkRadius(radius_);
-}
-
-void VonNeumannNeighbourhood::reinitialize() {
-  // Go through the whole square one-by-one
-  liveCount_ = 0;
-  for (int dx = -radius_; dx <= radius_; dx++) {
-    for (int dy = -radius_; dy <= radius_; dy++) {
-      if (dx == 0 && dy == 0) continue; // don't include the centre cell
-      if (getCell(dx, dy)) {
-        liveCount_++;
-      }
-    }
-  }
-}
-
-void VonNeumannNeighbourhood::translateRight() {
-  // Subtract the left column and add the new right column
-  for (int dy = -radius_; dy <= radius_; dy++) {
-    if (getCell(-radius_, dy)) liveCount_--;
-    if (getCell(radius_ + 1, dy)) liveCount_++;
-  }
-}
-
-void VonNeumannNeighbourhood::translateLeft() {
-  // Subtract the right column and add the new left column
-  for (int dy = -radius_; dy <= radius_; dy++) {
-    if (getCell(radius_, dy)) liveCount_--;
-    if (getCell(-radius_ - 1, dy)) liveCount_++;
-  }
-}
-
-void VonNeumannNeighbourhood::translateDown() {
-  // Subtract the top row and add the new bottom row
-  for (int dx = -radius_; dx <= radius_; dx++) {
-    if (getCell(dx, -radius_)) liveCount_--;
-    if (getCell(dx, radius_ + 1)) liveCount_++;
-  }
-}
-
 // MooreNeighbourhoodType
 
-// Note: the number of cells in a Moore neighbourhood of radius r is 2r(r+1)
 MooreNeighbourhoodType::MooreNeighbourhoodType(int radius)
-    : NeighbourhoodType(2*radius*(radius+1), radius), radius_(radius) {
+    : NeighbourhoodType(radius*radius - 1, radius), radius_(radius) {
   checkRadius(radius_);
 }
 
@@ -224,6 +168,62 @@ MooreNeighbourhood::MooreNeighbourhood(ChunkArray& chunkArray, int radius)
 }
 
 void MooreNeighbourhood::reinitialize() {
+  // Go through the whole square one-by-one
+  liveCount_ = 0;
+  for (int dx = -radius_; dx <= radius_; dx++) {
+    for (int dy = -radius_; dy <= radius_; dy++) {
+      if (dx == 0 && dy == 0) continue; // don't include the centre cell
+      if (getCell(dx, dy)) {
+        liveCount_++;
+      }
+    }
+  }
+}
+
+void MooreNeighbourhood::translateRight() {
+  // Subtract the left column and add the new right column
+  for (int dy = -radius_; dy <= radius_; dy++) {
+    if (getCell(-radius_, dy)) liveCount_--;
+    if (getCell(radius_ + 1, dy)) liveCount_++;
+  }
+}
+
+void MooreNeighbourhood::translateLeft() {
+  // Subtract the right column and add the new left column
+  for (int dy = -radius_; dy <= radius_; dy++) {
+    if (getCell(radius_, dy)) liveCount_--;
+    if (getCell(-radius_ - 1, dy)) liveCount_++;
+  }
+}
+
+void MooreNeighbourhood::translateDown() {
+  // Subtract the top row and add the new bottom row
+  for (int dx = -radius_; dx <= radius_; dx++) {
+    if (getCell(dx, -radius_)) liveCount_--;
+    if (getCell(dx, radius_ + 1)) liveCount_++;
+  }
+}
+
+// VonNeumannNeighbourhoodType
+
+// Note: the number of cells in a von Neumann neighbourhood of radius r is 2r(r+1)
+VonNeumannNeighbourhoodType::VonNeumannNeighbourhoodType(int radius)
+    : NeighbourhoodType(2*radius*(radius+1), radius), radius_(radius) {
+  checkRadius(radius_);
+}
+
+Neighbourhood* VonNeumannNeighbourhoodType::makeNeighbourhood(ChunkArray& chunkArray) const {
+  return new VonNeumannNeighbourhood(chunkArray, radius_);
+}
+
+// VonNeumannNeighbourhood
+
+VonNeumannNeighbourhood::VonNeumannNeighbourhood(ChunkArray& chunkArray, int radius)
+    : Neighbourhood(chunkArray), radius_(radius) {
+  checkRadius(radius_);
+}
+
+void VonNeumannNeighbourhood::reinitialize() {
   liveCount_ = 0;
   for (int dy = -radius_; dy <= radius_; dy++) {
     for (int dx = -getSideDist(dy); dx <= getSideDist(dy); dx++) {
@@ -235,7 +235,7 @@ void MooreNeighbourhood::reinitialize() {
   }
 }
 
-void MooreNeighbourhood::translateRight() {
+void VonNeumannNeighbourhood::translateRight() {
   // Subtract the leftmost part and add the new rightmost part
   for (int dy = -radius_; dy <= radius_; dy++) {
     if (getCell(-getSideDist(dy), dy)) liveCount_--;
@@ -243,7 +243,7 @@ void MooreNeighbourhood::translateRight() {
   }
 }
 
-void MooreNeighbourhood::translateLeft() {
+void VonNeumannNeighbourhood::translateLeft() {
   // Subtract the rightmost part and add the new leftmost part
   for (int dy = -radius_; dy <= radius_; dy++) {
     if (getCell(getSideDist(dy), dy)) liveCount_--;
@@ -251,7 +251,7 @@ void MooreNeighbourhood::translateLeft() {
   }
 }
 
-void MooreNeighbourhood::translateDown() {
+void VonNeumannNeighbourhood::translateDown() {
   // Subtract the topmost part and add the new bottommost part
   for (int dx = -radius_; dx <= radius_; dx++) {
     if (getCell(dx, -getSideDist(dx))) liveCount_--;
@@ -259,6 +259,6 @@ void MooreNeighbourhood::translateDown() {
   }
 }
 
-inline int MooreNeighbourhood::getSideDist(int a) {
+inline int VonNeumannNeighbourhood::getSideDist(int a) {
   return radius_ - abs(a);
 }

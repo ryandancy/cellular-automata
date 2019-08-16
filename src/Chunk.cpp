@@ -20,6 +20,8 @@ bool Chunk::getCell(int x, int y) const {
 
 // ChunkArray
 
+decltype(ChunkArray::EMPTY) ChunkArray::EMPTY;
+
 ChunkArray::ChunkArray(std::shared_ptr<Topology>& topology) : topology_(topology) {} // copy reference for ourselves
 
 ChunkArray::size_type ChunkArray::size() {
