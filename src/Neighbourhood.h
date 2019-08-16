@@ -100,7 +100,7 @@ class VonNeumannNeighbourhood; // forward declaration for VonNeumannNeighbourhoo
 class VonNeumannNeighbourhoodType : public NeighbourhoodType {
 public:
   // Initialize a VonNeumannNeighbourhoodType creating neighbourhoods with the specified radius.
-  // Throw std::invalid_parameter if radius is not positive.
+  // Throw std::invalid_argument if radius is not positive.
   explicit VonNeumannNeighbourhoodType(int radius);
   
   // Make a VonNeumannNeighbourhood with the radius specified in the constructor.
@@ -161,7 +161,7 @@ class MooreNeighbourhood : public Neighbourhood {
   
 protected:
   // Initialize the MooreNeighbourhood with the given ChunkArray and radius.
-  // Throw std::range_error if the radius is negative or zero.
+  // Throw std::invalid_argument if the radius is negative or zero.
   MooreNeighbourhood(ChunkArray& chunkArray, int radius);
   
   // Regenerate the live count.

@@ -18,7 +18,7 @@ public:
   virtual void tick(Side side); // like tick(), but only update the cells whose neighbourhoods run off on the given Side
   
   // Get the value of the cell at (x, y).
-  // Throw std::invalid_parameter if x >= CHUNK_SIZE, y >= CHUNK_SIZE, x < 0, or y < 0.
+  // Throw std::invalid_argument if x >= CHUNK_SIZE, y >= CHUNK_SIZE, x < 0, or y < 0.
   virtual bool getCell(int x, int y) const;
   
 private:

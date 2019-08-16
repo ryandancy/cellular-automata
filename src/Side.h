@@ -19,7 +19,7 @@ public:
   
   constexpr bool operator!=(const Side& side) const;
   
-  // transforms x and y, relative to the bottom, to relative to this Side
+  // Transform x and y, relative to the bottom, to relative to this Side.
   void transform(int& x, int& y, int width, int height) const;
 
 private:
