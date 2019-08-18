@@ -1,7 +1,9 @@
 #ifndef GAME_OF_LIFE_NEIGHBOURHOOD_H
 #define GAME_OF_LIFE_NEIGHBOURHOOD_H
 
-#include "Chunk.h"
+// we only have references to ChunkArray so it's safe to forward declare it without including Chunk.h
+// this resolves a circular dependency chain: Neighbourhood->ChunkArray->Chunk->Neighbourhood
+class ChunkArray;
 
 // This is an abstract base class representing the neighbourhood of a cell. Neighbourhoods can be moved around a
 // ChunkArray in order to save time. One Neighbourhood is created for each generation. Note that after creating a
@@ -9,8 +11,8 @@
 class Neighbourhood {
 public:
   // Move this Neighbourhood to (x, y) in the chunk at coordinates (chunkX, chunkY) in the ChunkArray.
-  // Throw std::invalid_argument if x or y are not in [0, CHUNK_SIZE), or there is no Chunk at (chunkX, chunkY).
-  void moveTo(int x, int y, int chunkX, int chunkY);
+  // Throw std::invalid_argument if x or y are not in [0, CHUNK_SIZE), or if there is no Chunk at (chunkX, chunkY).
+  void moveTo(int chunkX, int chunkY, int x = 0, int y = 0);
   
   int getX() const noexcept; // Get the x coordinate of the Neighbourhood in its chunk. Return <= CHUNK_SIZE.
   int getY() const noexcept; // Get the y coordinate of the Neighbourhood in its chunk. Return <= CHUNK_SIZE.
@@ -30,7 +32,7 @@ public:
   // Throw std::logic_error if the Neighbourhood is not ready (i.e. moveTo has not been called).
   int moveDown();
   
-  // int moveUp(); // not necessary for right-to-left scanning
+  // int moveUp(); // not necessary for line scanning
   
   // Get the live count of the Neighbourhood, i.e. the number of live cells in the Neighbourhood.
   unsigned int getLiveCount() const noexcept;

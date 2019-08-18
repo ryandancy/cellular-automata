@@ -1,11 +1,13 @@
 #include <stdexcept>
+
+#include "Chunk.h"
 #include "Neighbourhood.h"
 
 // I sincerely apologize, future self, for all the DRY violations.
 
 // Neighbourhood
 
-void Neighbourhood::moveTo(int x, int y, int chunkX, int chunkY) {
+void Neighbourhood::moveTo(int chunkX, int chunkY, int x, int y) {
   if (x < 0 || y < 0 || x >= CHUNK_SIZE || y >= CHUNK_SIZE) {
     throw std::invalid_argument("Cannot move to x or y less than 0 or greater than or equal to CHUNK_SIZE");
   }
