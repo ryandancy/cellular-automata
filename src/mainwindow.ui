@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>MainWindow</class>
+  <widget class="QMainWindow" name="MainWindow">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>800</width>
+        <height>400</height>
+      </rect>
+    </property>
+    <property name="windowTitle">
+      <string>Cellular Automata</string>
+    </property>
+    <widget class="QWidget" name="centralWidget">
+      <widget class="QGraphicsView" name="graphics">
+        <property name="geometry">
+          <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>800</width>
+            <height>351</height>
+          </rect>
+        </property>
+        <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+          </sizepolicy>
+        </property>
+      </widget>
+    </widget>
+    <widget class="QMenuBar" name="menuBar">
+      <property name="geometry">
+        <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>800</width>
+          <height>22</height>
+        </rect>
+      </property>
+      <widget class="QMenu" name="menuAutomaton">
+        <property name="title">
+          <string>Automaton</string>
+        </property>
+      </widget>
+      <addaction name="menuAutomaton"/>
+    </widget>
+    <widget class="QStatusBar" name="statusBar"/>
+  </widget>
+  <resources/>
+  <connections/>
+</ui>
