@@ -59,11 +59,11 @@ private:
 // The Topology may modify coordinates as it wishes.
 // All hail the great and mighty Topology.
 class ChunkArray {
+public:
   typedef std::unordered_map<std::pair<int, int>, Chunk, pair_hash>::iterator iterator;
   typedef std::unordered_map<std::pair<int, int>, Chunk, pair_hash>::const_iterator const_iterator;
   typedef std::unordered_map<std::pair<int, int>, Chunk, pair_hash>::size_type size_type;
   
-public:
   // Initialize this ChunkArray with the specified Topology
   explicit ChunkArray(std::shared_ptr<Topology>& topology);
   
@@ -75,6 +75,9 @@ public:
   
   // Does this ChunkArray contain a Chunk at (x, y)?
   bool contains(int x, int y) const;
+  
+  // Does this ChunkArray contain a non-empty Chunk at (x, y)?
+  bool hasNonEmpty(int x, int y);
   
   // Erase the Chunk at (x, y) if present, returning whether a Chunk was erased
   bool erase(int x, int y);

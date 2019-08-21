@@ -92,11 +92,6 @@ ChunkArray::size_type ChunkArray::size() {
   return map_.size();
 }
 
-bool ChunkArray::contains(int x, int y) const {
-  bool ok = topology_->transform(x, y);
-  return ok && map_.count({x, y}) == 1;
-}
-
 Chunk& ChunkArray::get(int x, int y) {
   bool ok = topology_->transform(x, y);
   if (!ok) {
@@ -109,6 +104,15 @@ Chunk& ChunkArray::get(int x, int y) {
     map_.emplace(xy, Chunk(x, y));
   }
   return map_.at(xy);
+}
+
+bool ChunkArray::contains(int x, int y) const {
+  bool ok = topology_->transform(x, y);
+  return ok && map_.count({x, y}) == 1;
+}
+
+bool ChunkArray::hasNonEmpty(int x, int y) {
+  return contains(x, y) && !get(x, y).isEmpty();
 }
 
 bool ChunkArray::erase(int x, int y) {
