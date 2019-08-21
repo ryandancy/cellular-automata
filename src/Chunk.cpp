@@ -7,15 +7,15 @@
 
 Chunk::Chunk(int x, int y) noexcept : x_(x), y_(y) {}
 
-void Chunk::updateCell(const Ruleset& ruleset, Neighbourhood& neighbourhood, int x, int y) {
+void Chunk::updateNewCell(const Ruleset& ruleset, Neighbourhood& neighbourhood, int x, int y) {
   unsigned int liveCount = neighbourhood.getLiveCount();
   if (cells_[x][y]) {
-    cells_[x][y] = ruleset.survivesWith(liveCount);
+    newCells_[x][y] = ruleset.survivesWith(liveCount);
   } else {
-    cells_[x][y] = ruleset.isBornWith(liveCount);
+    newCells_[x][y] = ruleset.isBornWith(liveCount);
   }
-  if (empty_ && cells_[x][y]) {
-    empty_ = false;
+  if (nextGenEmpty_ && cells_[x][y]) {
+    nextGenEmpty_ = false;
   }
 }
 
@@ -23,38 +23,48 @@ void Chunk::scanLine(const Ruleset& ruleset, Neighbourhood& neighbourhood, int& 
   if (x == 0) {
     do {
       x = neighbourhood.moveToSide(side.right());
-      updateCell(ruleset, neighbourhood, x, y);
+      updateNewCell(ruleset, neighbourhood, x, y);
     } while (x < CHUNK_SIZE - 1);
   } else {
     do {
       x = neighbourhood.moveToSide(side.left());
-      updateCell(ruleset, neighbourhood, x, y);
+      updateNewCell(ruleset, neighbourhood, x, y);
     } while (x > 0);
   }
 }
 
-void Chunk::tick(const Ruleset& ruleset, Neighbourhood& neighbourhood, const Side& side,
+void Chunk::generate(const Ruleset& ruleset, Neighbourhood& neighbourhood, const Side& side,
     unsigned int affectingDistance) {
   // Scan-line: we start at (0, 0) or equivalent, move right to (CHUNK_SIZE-1, 0), move down 1, move left to (0, 1), etc
   // We treat it like the side is Side::BOTTOM always and transform on function calls
   int x = 0, y = CHUNK_SIZE - affectingDistance;
   neighbourhood.moveTo(x_, y_, x, y);
   
-  if (affectingDistance == CHUNK_SIZE) {
-    empty_ = true; // until proven otherwise
-  }
-  
   scanLine(ruleset, neighbourhood, x, y, side);
   while (y < CHUNK_SIZE - 1) {
     y = neighbourhood.moveToSide(side);
-    updateCell(ruleset, neighbourhood, x, y);
+    updateNewCell(ruleset, neighbourhood, x, y);
     scanLine(ruleset, neighbourhood, x, y, side);
   }
 }
 
-void Chunk::tick(const Ruleset& ruleset, Neighbourhood& neighbourhood) {
+void Chunk::generate(const Ruleset& ruleset, Neighbourhood& neighbourhood) {
   // Overload, not default, because "default arguments prohibited on virtual or override methods"
-  tick(ruleset, neighbourhood, Side::CONST_BOTTOM, CHUNK_SIZE); // CONST_BOTTOM to not construct another Side
+  generate(ruleset, neighbourhood, Side::CONST_BOTTOM, CHUNK_SIZE); // CONST_BOTTOM to not construct another Side
+}
+
+void Chunk::update() {
+  if (empty_ && nextGenEmpty_) {
+    // no point, we won't update anything
+    return;
+  }
+  
+  // this is probably performance critical, so memcpy/memset it is
+  memcpy(&cells_, &newCells_, sizeof(cells_)); // FIXME if there's a segfault, it's probably here
+  memset(&newCells_, 0, sizeof(newCells_)); // the next generation starts at 0
+  
+  empty_ = nextGenEmpty_;
+  nextGenEmpty_ = true; // until proven otherwise
 }
 
 bool Chunk::getCell(int x, int y) const {
@@ -66,6 +76,10 @@ bool Chunk::getCell(int x, int y) const {
 
 bool Chunk::isEmpty() const noexcept {
   return empty_;
+}
+
+bool Chunk::isNextGenEmpty() const noexcept {
+  return nextGenEmpty_;
 }
 
 // ChunkArray
