@@ -13,6 +13,8 @@ public:
   // Transform a possibly-invalid set of coordinates (x, y) to a valid set and return true, or return false if this
   // cannot be done and the chunk should be treated as fully empty.
   virtual bool transform(int& x, int& y) = 0;
+  
+  virtual ~Topology() = default;
 };
 
 // This is an abstract Topology with bounds, meaning it has a width and a height. Chunks are valid iff they are within

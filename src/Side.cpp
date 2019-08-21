@@ -1,11 +1,12 @@
 #include "Side.h"
 #include <utility>
 
-constexpr Side::Side(Value value) : value_(value) {}
+const Side Side::CONST_BOTTOM(Side::BOTTOM);
+const Side Side::CONST_TOP(Side::TOP);
+const Side Side::CONST_LEFT(Side::LEFT);
+const Side Side::CONST_RIGHT(Side::RIGHT);
 
-Side::operator Value() const {
-  return value_;
-}
+constexpr Side::Side(Value value) noexcept : value_(value) {}
 
 constexpr bool Side::operator==(const Side& side) const {
   return value_ == side.value_;
@@ -24,5 +25,33 @@ void Side::transform(int& x, int& y, int width, int height) const {
   }
   if (value_ == TOP || value_ == RIGHT) {
     y = height - y;
+  }
+}
+
+const Side& Side::right() const noexcept {
+  switch (value_) {
+    case BOTTOM:
+    default:
+      return Side::CONST_RIGHT;
+    case LEFT:
+      return Side::CONST_BOTTOM;
+    case TOP:
+      return Side::CONST_LEFT;
+    case RIGHT:
+      return Side::CONST_TOP;
+  }
+}
+
+const Side& Side::left() const noexcept {
+  switch (value_) {
+    case BOTTOM:
+    default:
+      return Side::CONST_LEFT;
+    case RIGHT:
+      return Side::CONST_BOTTOM;
+    case TOP:
+      return Side::CONST_RIGHT;
+    case LEFT:
+      return Side::CONST_TOP;
   }
 }

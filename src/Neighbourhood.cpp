@@ -82,6 +82,36 @@ int Neighbourhood::moveDown() {
   return ++y_;
 }
 
+int Neighbourhood::moveUp() {
+  // Check that we can move up from here
+  verifyReady();
+  if (y_ == 0) {
+    throw std::range_error("Neighbourhood cannot move up: already at minimum for chunk (0)");
+  }
+  
+  translateUp();
+  
+  // Add the old centre cell and subtract the new centre cell
+  if (getCell(0, 0)) liveCount_++;
+  if (getCell(0, -1)) liveCount_--;
+  
+  return --y_;
+}
+
+int Neighbourhood::moveToSide(const Side& side) {
+  switch (side) {
+    case Side::BOTTOM:
+    default:
+      return moveDown();
+    case Side::LEFT:
+      return moveLeft();
+    case Side::RIGHT:
+      return moveRight();
+    case Side::TOP:
+      return moveUp();
+  }
+}
+
 // Initialize the chunk array, but set ready_ to false
 Neighbourhood::Neighbourhood(ChunkArray& chunkArray)
   : chunkArray_(chunkArray), x_(0), y_(0), chunkX_(0), chunkY_(0), liveCount_(0), ready_(false) {}
@@ -210,6 +240,14 @@ void MooreNeighbourhood::translateDown() {
   }
 }
 
+void MooreNeighbourhood::translateUp() {
+  // Subtract the bottom row and add the new top row
+  for (int dx = -radius_; dx <= radius_; dx++) {
+    if (getCell(dx, radius_)) liveCount_--;
+    if (getCell(dx, -radius_ - 1)) liveCount_++;
+  }
+}
+
 // VonNeumannNeighbourhoodType
 
 // Note: the number of cells in a von Neumann neighbourhood of radius r is 2r(r+1)
@@ -266,6 +304,14 @@ void VonNeumannNeighbourhood::translateDown() {
   for (int dx = -radius_; dx <= radius_; dx++) {
     if (getCell(dx, -getSideDist(dx))) liveCount_--;
     if (getCell(dx, getSideDist(dx) + 1)) liveCount_++;
+  }
+}
+
+void VonNeumannNeighbourhood::translateUp() {
+  // Subtract the bottommost part and add the new topmost part
+  for (int dx = -radius_; dx <= radius_; dx++) {
+    if (getCell(dx, getSideDist(dx))) liveCount_--;
+    if (getCell(dx, -getSideDist(dx) - 1)) liveCount_++;
   }
 }
 

@@ -37,11 +37,11 @@ public:
   
   // Should a dead cell with this number of live neighbours become alive?
   // Throw std::invalid_argument if numNeighbours is greater than the total number of cells of the neighbourhood.
-  bool isBornWith(unsigned int numNeighbours);
+  bool isBornWith(unsigned int numNeighbours) const;
   
   // Should a live cell with this number of live neighbours survive?
   // Throw std::invalid_argument if numNeighbours is greater than the total number of cells of the neighbourhood.
-  bool survivesWith(unsigned int numNeighbours);
+  bool survivesWith(unsigned int numNeighbours) const;
   
   // Set whether a dead cell with this number of live neighbours becomes alive.
   // Throw std::invalid_argument if numNeighbours is greater than the total number of cells of the neighbourhood.
@@ -53,7 +53,7 @@ public:
   
 private:
   // Check that numNeighbours <= total number of cells of neighbourhood, throw std::invalid_argument otherwise.
-  void checkNumNeighboursInRange(unsigned int numNeighbours);
+  void checkNumNeighboursInRange(unsigned int numNeighbours) const;
   
   // Note: we *probably* should use smart pointers, but I want to implement the memory management, so whatever.
   

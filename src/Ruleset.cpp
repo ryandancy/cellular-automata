@@ -103,12 +103,12 @@ void Ruleset::setNeighbourhoodType(NeighbourhoodType* neighbourhoodType) {
 
 // Retrieving and setting rules
 
-bool Ruleset::isBornWith(unsigned int numNeighbours) {
+bool Ruleset::isBornWith(unsigned int numNeighbours) const {
   checkNumNeighboursInRange(numNeighbours);
   return born_[numNeighbours];
 }
 
-bool Ruleset::survivesWith(unsigned int numNeighbours) {
+bool Ruleset::survivesWith(unsigned int numNeighbours) const {
   checkNumNeighboursInRange(numNeighbours);
   return survive_[numNeighbours];
 }
@@ -125,9 +125,9 @@ void Ruleset::setSurvivesWith(unsigned int numNeighbours, bool value) {
 
 // Utility
 
-void Ruleset::checkNumNeighboursInRange(unsigned int numNeighbours) {
+void Ruleset::checkNumNeighboursInRange(unsigned int numNeighbours) const {
   if (numNeighbours > neighbourhoodType_->getNumCells()) {
-    throw std::invalid_argument(
-        "Cannot set or get rule for number of neighbours greater than the total number of cells in the neighbourhood.");
+    throw std::invalid_argument("Cannot set or get rule for number of neighbours greater than "
+        "the total number of cells in the neighbourhood.");
   }
 }

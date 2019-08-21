@@ -1,6 +1,8 @@
 #ifndef GAME_OF_LIFE_NEIGHBOURHOOD_H
 #define GAME_OF_LIFE_NEIGHBOURHOOD_H
 
+#include "Side.h"
+
 // we only have references to ChunkArray so it's safe to forward declare it without including Chunk.h
 // this resolves a circular dependency chain: Neighbourhood->ChunkArray->Chunk->Neighbourhood
 class ChunkArray;
@@ -32,7 +34,15 @@ public:
   // Throw std::logic_error if the Neighbourhood is not ready (i.e. moveTo has not been called).
   int moveDown();
   
-  // int moveUp(); // not necessary for line scanning
+  // Move the Neighbourhood one cell up in its chunk, updating the live count. Return the new y coordinate.
+  // Throw std::range_error if the y coordinate is already 0 and we try to move out of the chunk.
+  // Throw std::logic_error if the Neighbourhood is not ready (i.e. moveTo has not been called).
+  int moveUp();
+  
+  // Move the Neighbourhood one cell towards the given side, updating the live count. Return the new x or y coordinate,
+  // depending on which side is moved towards. Throw std::range_error if this call tries to move out of the chunk.
+  // Throw std::logic_error if the Neighbourhood is not ready (i.e. moveTo has not been called).
+  int moveToSide(const Side& side);
   
   // Get the live count of the Neighbourhood, i.e. the number of live cells in the Neighbourhood.
   unsigned int getLiveCount() const noexcept;
@@ -51,11 +61,12 @@ protected:
   // This is called from moveTo(int, int, int, int) to update from scratch.
   virtual void reinitialize() = 0;
   
-  // These are the implementations of move[Left|Right|Down], called after error checking and before changing x_ and y_.
+  // These are the implementations of move[L/R/U/D], called after error checking and before changing x_ and y_.
   // They must update the live count, except for the centre cell. move[Left|Right|Down] takes care of that.
   virtual void translateRight() = 0;
   virtual void translateLeft() = 0;
   virtual void translateDown() = 0;
+  virtual void translateUp() = 0;
   
   // Get the value of a cell by its offset from (x_, y_).
   bool getCell(int dx, int dy) const;
@@ -141,6 +152,7 @@ protected:
   void translateRight() override;
   void translateLeft() override;
   void translateDown() override;
+  void translateUp() override;
   
 private:
   const int radius_;
@@ -184,6 +196,7 @@ protected:
   void translateRight() override;
   void translateLeft() override;
   void translateDown() override;
+  void translateUp() override;
   
 private:
   // Get the distance that the neighbourhood extends sideways in the a-th row or column.

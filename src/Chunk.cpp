@@ -7,7 +7,7 @@
 
 Chunk::Chunk(int x, int y) noexcept : x_(x), y_(y) {}
 
-void Chunk::updateCell(Ruleset& ruleset, Neighbourhood& neighbourhood, int x, int y) {
+void Chunk::updateCell(const Ruleset& ruleset, Neighbourhood& neighbourhood, int x, int y) {
   unsigned int liveCount = neighbourhood.getLiveCount();
   if (cells_[x][y]) {
     cells_[x][y] = ruleset.survivesWith(liveCount);
@@ -19,38 +19,42 @@ void Chunk::updateCell(Ruleset& ruleset, Neighbourhood& neighbourhood, int x, in
   }
 }
 
-void Chunk::scanLine(Ruleset& ruleset, Neighbourhood& neighbourhood, int& x, int y) {
+void Chunk::scanLine(const Ruleset& ruleset, Neighbourhood& neighbourhood, int& x, int y, const Side& side) {
   if (x == 0) {
     do {
-      x = neighbourhood.moveRight();
+      x = neighbourhood.moveToSide(side.right());
       updateCell(ruleset, neighbourhood, x, y);
     } while (x < CHUNK_SIZE - 1);
   } else {
     do {
-      x = neighbourhood.moveLeft();
+      x = neighbourhood.moveToSide(side.left());
       updateCell(ruleset, neighbourhood, x, y);
     } while (x > 0);
   }
 }
 
-void Chunk::tick(Ruleset& ruleset, Neighbourhood& neighbourhood) {
-  // Scan-line: we start at (0, 0), move right to (CHUNK_SIZE-1, 0), move down 1, move left to (0, 1), etc.
-  neighbourhood.moveTo(x_, y_);
+void Chunk::tick(const Ruleset& ruleset, Neighbourhood& neighbourhood, const Side& side,
+    unsigned int affectingDistance) {
+  // Scan-line: we start at (0, 0) or equivalent, move right to (CHUNK_SIZE-1, 0), move down 1, move left to (0, 1), etc
+  // We treat it like the side is Side::BOTTOM always and transform on function calls
+  int x = 0, y = CHUNK_SIZE - affectingDistance;
+  neighbourhood.moveTo(x_, y_, x, y);
   
-  empty_ = true; // until proven otherwise
+  if (affectingDistance == CHUNK_SIZE) {
+    empty_ = true; // until proven otherwise
+  }
   
-  int x = 0, y = 0;
-  scanLine(ruleset, neighbourhood, x, y);
-  
+  scanLine(ruleset, neighbourhood, x, y, side);
   while (y < CHUNK_SIZE - 1) {
-    y = neighbourhood.moveDown();
+    y = neighbourhood.moveToSide(side);
     updateCell(ruleset, neighbourhood, x, y);
-    scanLine(ruleset, neighbourhood, x, y);
+    scanLine(ruleset, neighbourhood, x, y, side);
   }
 }
 
-void Chunk::tickSide(Ruleset& ruleset, Neighbourhood& neighbourhood, Side side, int affectingDistance) {
-  // TODO
+void Chunk::tick(const Ruleset& ruleset, Neighbourhood& neighbourhood) {
+  // Overload, not default, because "default arguments prohibited on virtual or override methods"
+  tick(ruleset, neighbourhood, Side::CONST_BOTTOM, CHUNK_SIZE); // CONST_BOTTOM to not construct another Side
 }
 
 bool Chunk::getCell(int x, int y) const {

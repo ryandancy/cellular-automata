@@ -21,11 +21,11 @@ public:
   
   // Move the entire Chunk to the next generation using the given Neighbourhood, which will be moved around.
   // Evaluate all the cells in the Chunk using the Ruleset and update what Chunk::getCell(x, y) will return.
-  virtual void tick(Ruleset& ruleset, Neighbourhood& neighbourhood);
-  
-  // Move only the cells within affectingDistance of the given side to the next generation using the given
-  // Neighbourhood and Ruleset. This should be used when the chunk is empty, but adjacent to a non-empty chunk.
-  virtual void tickSide(Ruleset& ruleset, Neighbourhood& neighbourhood, Side side, int affectingDistance);
+  // If side and affectingDistance are specified, evaluate only the cells within affectingDistance of side.
+  // (Note: this is overloaded instead of using default arguments because they're not allowed on virtual methods.)
+  virtual void tick(const Ruleset& ruleset, Neighbourhood& neighbourhood, const Side& side,
+      unsigned int affectingDistance);
+  virtual void tick(const Ruleset& ruleset, Neighbourhood& neighbourhood);
   
   // Get the value of the cell at (x, y).
   // Throw std::invalid_argument if x >= CHUNK_SIZE, y >= CHUNK_SIZE, x < 0, or y < 0.
@@ -36,10 +36,10 @@ public:
   
 private:
   // Update the cell at (x, y), assuming the neighbourhood is centred at (x, y), using the ruleset.
-  void updateCell(Ruleset& ruleset, Neighbourhood& neighbourhood, int x, int y);
+  void updateCell(const Ruleset& ruleset, Neighbourhood& neighbourhood, int x, int y);
   
-  // Scan a single line left or right. Modifies x.
-  void scanLine(Ruleset& ruleset, Neighbourhood& neighbourhood, int& x, int y);
+  // Scan a single line left or right with reference to the optionally given side. Modifies x.
+  void scanLine(const Ruleset& ruleset, Neighbourhood& neighbourhood, int& x, int y, const Side& side = Side::BOTTOM);
   
   int x_, y_; // coordinates of this Chunk
   bool cells_[CHUNK_SIZE][CHUNK_SIZE] = {}; // the cells in the Chunk; index like cells_[x][y]
@@ -82,8 +82,8 @@ private:
   // Empty Chunk for use when the Topology specifies a chunk is to be treated as empty
   struct : public Chunk {
     using Chunk::Chunk;
-    void tick(Ruleset&, Neighbourhood&) override {}
-    void tickSide(Ruleset&, Neighbourhood&, Side, int) override {}
+    void tick(const Ruleset&, Neighbourhood&, const Side&, unsigned int) override {}
+    void tick(const Ruleset&, Neighbourhood&) override {}
     bool getCell(int x, int y) const override { return false; }
     bool isEmpty() const noexcept override { return true; }
   } static EMPTY;
