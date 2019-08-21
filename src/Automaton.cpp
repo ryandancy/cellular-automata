@@ -3,7 +3,7 @@
 #include "Automaton.h"
 
 Automaton::Automaton(Topology* topology, NeighbourhoodType* initialNeighbourhoodType)
-    : topology_(topology), chunkArray_(topology_), ruleset_(initialNeighbourhoodType), generation_(0) {
+    : chunkArray_(topology), ruleset_(initialNeighbourhoodType), generation_(0) {
   if (topology == nullptr || initialNeighbourhoodType == nullptr) {
     throw std::invalid_argument("Cannot initialize Automaton with a null pointer");
   }
@@ -84,6 +84,7 @@ void Automaton::tick() {
       }
     } else {
       // Do we need to add any?
+      // TODO it's possible that this isn't necessary because Neighbourhood checks this - test
       for (int dx = -1; dx <= 1; dx++) {
         for (int dy = -1; dy <= 1; dy++) {
           if (dx == dy) continue;

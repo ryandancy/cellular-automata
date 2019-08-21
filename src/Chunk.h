@@ -65,7 +65,7 @@ public:
   typedef std::unordered_map<std::pair<int, int>, Chunk, pair_hash>::size_type size_type;
   
   // Initialize this ChunkArray with the specified Topology
-  explicit ChunkArray(std::shared_ptr<Topology>& topology);
+  explicit ChunkArray(Topology* topology);
   
   // How many Chunks are stored?
   size_type size();
@@ -101,7 +101,7 @@ private:
   } static EMPTY;
   
   std::unordered_map<std::pair<int, int>, Chunk, pair_hash> map_;
-  std::shared_ptr<Topology> topology_;
+  std::unique_ptr<Topology> topology_;
 };
 
 #endif //GAME_OF_LIFE_CHUNK_H

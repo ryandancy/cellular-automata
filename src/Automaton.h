@@ -29,7 +29,6 @@ public:
   
 private:
   ChunkArray chunkArray_;
-  std::shared_ptr<Topology> topology_; // TODO should this just be a unique_ptr owned by ChunkArray?
   Ruleset ruleset_;
   int generation_;
 };

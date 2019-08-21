@@ -86,7 +86,7 @@ bool Chunk::isNextGenEmpty() const noexcept {
 
 decltype(ChunkArray::EMPTY) ChunkArray::EMPTY(0, 0);
 
-ChunkArray::ChunkArray(std::shared_ptr<Topology>& topology) : topology_(topology) {} // copy reference for ourselves
+ChunkArray::ChunkArray(Topology* topology) : topology_(topology) {} // adopt the topology for ourselves
 
 ChunkArray::size_type ChunkArray::size() {
   return map_.size();
