@@ -10,26 +10,49 @@
         <height>400</height>
       </rect>
     </property>
+    <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+      </sizepolicy>
+    </property>
     <property name="windowTitle">
       <string>Cellular Automata</string>
     </property>
     <widget class="QWidget" name="centralWidget">
-      <widget class="QGraphicsView" name="graphics">
-        <property name="geometry">
-          <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>800</width>
-            <height>351</height>
-          </rect>
+      <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+        </sizepolicy>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="sizeConstraint">
+          <enum>QLayout::SetNoConstraint</enum>
         </property>
-        <property name="sizePolicy">
-          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-          </sizepolicy>
+        <property name="leftMargin">
+          <number>0</number>
         </property>
-      </widget>
+        <property name="topMargin">
+          <number>0</number>
+        </property>
+        <property name="rightMargin">
+          <number>0</number>
+        </property>
+        <property name="bottomMargin">
+          <number>0</number>
+        </property>
+        <item>
+          <widget class="QGraphicsView" name="graphics">
+            <property name="sizePolicy">
+              <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+              </sizepolicy>
+            </property>
+          </widget>
+        </item>
+      </layout>
     </widget>
     <widget class="QMenuBar" name="menuBar">
       <property name="geometry">
@@ -40,14 +63,44 @@
           <height>22</height>
         </rect>
       </property>
+      <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+        </sizepolicy>
+      </property>
       <widget class="QMenu" name="menuAutomaton">
         <property name="title">
           <string>Automaton</string>
         </property>
+        <addaction name="actionNextGeneration"/>
+        <addaction name="actionPlay"/>
+        <addaction name="actionPause"/>
+        <addaction name="actionReset" />
       </widget>
       <addaction name="menuAutomaton"/>
     </widget>
     <widget class="QStatusBar" name="statusBar"/>
+    <action name="actionNextGeneration">
+      <property name="text">
+        <string>Next Generation</string>
+      </property>
+    </action>
+    <action name="actionPlay">
+      <property name="text">
+        <string>Play</string>
+      </property>
+    </action>
+    <action name="actionPause">
+      <property name="text">
+        <string>Pause</string>
+      </property>
+    </action>
+    <action name="actionReset">
+      <property name="text">
+        <string>Reset</string>
+      </property>
+    </action>
   </widget>
   <resources/>
   <connections/>

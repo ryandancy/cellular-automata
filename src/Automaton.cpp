@@ -24,7 +24,7 @@ void Automaton::tick() {
   // Generate for every chunk
   for (auto& chunkPair : chunkArray_) {
     int x = chunkPair.first.first, y = chunkPair.first.second;
-    Chunk& chunk = chunkPair.second;
+    Chunk& chunk = *chunkPair.second;
     
     if (chunk.isEmpty()) {
       // Only generate on sides where it's possible to affect something
@@ -57,13 +57,13 @@ void Automaton::tick() {
   
   // Update every chunk
   for (auto& chunkPair : chunkArray_) {
-    chunkPair.second.update();
+    chunkPair.second->update();
   }
   
   // Remove isolated empty chunks and add empty chunks beside non-padded non-empty ones
   for (auto& chunkPair : chunkArray_) {
     int x = chunkPair.first.first, y = chunkPair.first.second;
-    Chunk& chunk = chunkPair.second;
+    Chunk& chunk = *chunkPair.second;
     
     if (chunk.isEmpty()) {
       // See if we can erase it

@@ -9,7 +9,6 @@
 
 // An Automaton encapsulates the entire cellular automaton. It owns a Topology*, a Ruleset, and
 // a ChunkArray. It can advance the generation of the automaton by calling Automaton::tick().
-// TODO some way to access the contents for displaying
 class Automaton {
 public:
   // Initialize the Automaton with a given topology (fixed) and neighbourhood type (can be modified later).

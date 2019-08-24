@@ -5,7 +5,7 @@
 
 // Chunk
 
-Chunk::Chunk(int x, int y) noexcept : x_(x), y_(y) {}
+Chunk::Chunk(int x, int y) noexcept : chunkX(x), chunkY(y) {}
 
 void Chunk::updateNewCell(const Ruleset& ruleset, Neighbourhood& neighbourhood, int x, int y) {
   unsigned int liveCount = neighbourhood.getLiveCount();
@@ -38,7 +38,7 @@ void Chunk::generate(const Ruleset& ruleset, Neighbourhood& neighbourhood, const
   // Scan-line: we start at (0, 0) or equivalent, move right to (CHUNK_SIZE-1, 0), move down 1, move left to (0, 1), etc
   // We treat it like the side is Side::BOTTOM always and transform on function calls
   int x = 0, y = CHUNK_SIZE - affectingDistance;
-  neighbourhood.moveTo(x_, y_, x, y);
+  neighbourhood.moveTo(chunkX, chunkY, x, y);
   
   scanLine(ruleset, neighbourhood, x, y, side);
   while (y < CHUNK_SIZE - 1) {
@@ -65,6 +65,8 @@ void Chunk::update() {
   
   empty_ = nextGenEmpty_;
   nextGenEmpty_ = true; // until proven otherwise
+  
+  emit chunkChanged(cells_);
 }
 
 bool Chunk::getCell(int x, int y) const {
@@ -88,6 +90,13 @@ decltype(ChunkArray::EMPTY) ChunkArray::EMPTY(0, 0);
 
 ChunkArray::ChunkArray(Topology* topology) : topology_(topology) {} // adopt the topology for ourselves
 
+ChunkArray::~ChunkArray() {
+  // delete all the Chunks
+  for (std::pair<std::pair<int, int>, Chunk*> element : map_) {
+    delete element.second;
+  }
+}
+
 ChunkArray::size_type ChunkArray::size() {
   return map_.size();
 }
@@ -99,11 +108,11 @@ Chunk& ChunkArray::get(int x, int y) {
   }
   
   // Create a Chunk if it isn't there - we need to call Chunk's constructor ourselves
-  std::pair<int, int> xy = {x, y};
+  std::pair<int, int> xy(x, y);
   if (!map_.count(xy)) {
-    map_.emplace(xy, Chunk(x, y));
+    map_.emplace(xy, new Chunk(x, y));
   }
-  return map_.at(xy);
+  return *map_.at(xy);
 }
 
 bool ChunkArray::contains(int x, int y) const {
@@ -118,10 +127,15 @@ bool ChunkArray::hasNonEmpty(int x, int y) {
 bool ChunkArray::erase(int x, int y) {
   bool ok = topology_->transform(x, y);
   if (ok) {
-    return map_.erase({x, y}) > 0;
-  } else {
-    return false;
+    // Destruct the Chunk
+    std::pair<int, int> xy(x, y);
+    if (map_.count(xy)) {
+      delete map_.at(xy);
+      map_.erase(xy);
+      return true;
+    }
   }
+  return false;
 }
 
 ChunkArray::iterator ChunkArray::begin() noexcept {
