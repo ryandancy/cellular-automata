@@ -36,7 +36,12 @@ public slots:
   void addChunkGraphicsItem(int x, int y);
   void removeChunkGraphicsItem(int x, int y);
   
+private slots:
+  void nextGeneration();
+  
 private:
+  void updateStatusBar() const; // Update "Generation: X" in the status bar
+  
   Ui::MainWindow* ui_;
   AutomatonScene* scene_; // where we draw the actual automaton
   Automaton* automaton_; // the model itself

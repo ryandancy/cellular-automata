@@ -45,7 +45,7 @@ public:
   virtual void setCell(int x, int y, bool value);
   
   virtual bool isEmpty() const noexcept; // Is the whole Chunk empty?
-  virtual bool isNextGenEmpty() const noexcept; // Is the next generation currently empty?
+  virtual bool isNextGenEmpty() const noexcept; // Is the next generation currently empty? TODO necessary?
   
   const int chunkX, chunkY; // The coordinates of this Chunk.
   
@@ -53,6 +53,9 @@ signals:
   void chunkChanged(bool newCells[CHUNK_SIZE][CHUNK_SIZE]);
 
 private:
+  // Check that 0 <= x < CHUNK_SIZE and 0 <= y < CHUNK_SIZE, throwing std::invalid_argument otherwise.
+  static void checkInBounds(int x, int y);
+  
   // Update the cell at (x, y), assuming the neighbourhood is centred at (x, y), using the ruleset.
   void updateNewCell(const Ruleset& ruleset, Neighbourhood& neighbourhood, int x, int y);
   
@@ -61,8 +64,8 @@ private:
   
   bool cells_[CHUNK_SIZE][CHUNK_SIZE] = {}; // the cells in the Chunk; index like cells_[x][y]
   bool newCells_[CHUNK_SIZE][CHUNK_SIZE] = {}; // the cells of the next generation
-  bool empty_ = true; // is the Chunk completely empty?
-  bool nextGenEmpty_ = true; // is the next generation of the Chunk currently completely empty?
+  int liveCellCount_ = 0; // count the number of live cells, currently; used for determining if it's empty
+  int nextLiveCellCount_ = 0; // same for the next generation
 };
 
 // A 2D-indexed list of Chunks - a thin wrapper over std::unordered_map.
@@ -105,8 +108,8 @@ public:
   // Iterators, iterating over pairs of coordinate pairs and pointers to corresponding Chunks
   iterator begin() noexcept;
   iterator end() noexcept;
-  const_iterator begin() const noexcept;
-  const_iterator end() const noexcept;
+  const_iterator cbegin() const noexcept;
+  const_iterator cend() const noexcept;
   
 signals:
   void chunkAdded(int x, int y);

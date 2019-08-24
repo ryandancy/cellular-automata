@@ -29,6 +29,9 @@ public:
   // Get the chunk array behind the automaton.
   ChunkArray& chunkArray() noexcept;
   
+  // Get the Ruleset managing the automaton. (What's an encapsulation? Why not just have them be public?)
+  Ruleset& ruleset() noexcept;
+  
 private:
   ChunkArray chunkArray_;
   Ruleset ruleset_;

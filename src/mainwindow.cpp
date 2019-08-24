@@ -1,5 +1,8 @@
 #include <iostream>
 
+#include <QAction>
+#include <QString>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -11,8 +14,13 @@
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainWindow),
     // TODO this is just a default - allow customization of topology and neighbourhood type
-    automaton_(new Automaton(new WrappingTopology(20, 20),
+    automaton_(new Automaton(new FixedTopology(20, 20),
         new MooreNeighbourhoodType(1))) {
+  
+  // set default automaton rules for Conway's Game of Life - TODO allow customization
+  automaton_->ruleset().setBornWith(3, true);
+  automaton_->ruleset().setSurvivesWith(2, true);
+  automaton_->ruleset().setSurvivesWith(3, true);
   
   ui_->setupUi(this);
   QMainWindow::centralWidget()->layout()->setContentsMargins(0, 0, 0, 0); // make it flush
@@ -22,6 +30,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
   
   connect(&automaton_->chunkArray(), &ChunkArray::chunkAdded, this, &MainWindow::addChunkGraphicsItem);
   connect(&automaton_->chunkArray(), &ChunkArray::chunkRemoved, this, &MainWindow::removeChunkGraphicsItem);
+  
+  connect(ui_->actionNextGeneration, &QAction::triggered, this, &MainWindow::nextGeneration);
+  
+  updateStatusBar();
   
   // Add one chunk at (0, 0) to ward off QGraphicsView weirdness
   automaton_->chunkArray().get(0, 0);
@@ -65,4 +77,13 @@ void MainWindow::removeChunkGraphicsItem(int x, int y) {
   scene_->removeItem(item);
   delete item;
   chunkGIMap_.erase(xy);
+}
+
+void MainWindow::nextGeneration() {
+  automaton_->tick();
+  updateStatusBar();
+}
+
+void MainWindow::updateStatusBar() const {
+  statusBar()->showMessage(tr("Generation: ") + QString::number(automaton_->generation()));
 }

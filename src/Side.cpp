@@ -21,10 +21,10 @@ void Side::transform(int& x, int& y, int width, int height) const {
     std::swap(x, y);
   }
   if (value_ == TOP || value_ == LEFT) {
-    x = width - x;
+    x = width - x - 1;
   }
   if (value_ == TOP || value_ == RIGHT) {
-    y = height - y;
+    y = height - y - 1;
   }
 }
 

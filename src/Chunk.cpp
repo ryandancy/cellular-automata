@@ -7,27 +7,36 @@
 
 Chunk::Chunk(int x, int y) noexcept : chunkX(x), chunkY(y) {}
 
+void Chunk::checkInBounds(int x, int y) {
+  if (x < 0 || y < 0 || x >= CHUNK_SIZE || y >= CHUNK_SIZE) {
+    throw std::invalid_argument("Cannot set or get cell with x or y not in [0, CHUNK_SIZE).");
+  }
+}
+
 void Chunk::updateNewCell(const Ruleset& ruleset, Neighbourhood& neighbourhood, int x, int y) {
+  checkInBounds(x, y);
   unsigned int liveCount = neighbourhood.getLiveCount();
   if (cells_[x][y]) {
     newCells_[x][y] = ruleset.survivesWith(liveCount);
   } else {
     newCells_[x][y] = ruleset.isBornWith(liveCount);
   }
-  if (nextGenEmpty_ && cells_[x][y]) {
-    nextGenEmpty_ = false;
+  if (newCells_[x][y]) {
+    nextLiveCellCount_++;
   }
 }
 
 void Chunk::scanLine(const Ruleset& ruleset, Neighbourhood& neighbourhood, int& x, int y, const Side& side) {
   if (x == 0) {
     do {
-      x = neighbourhood.moveToSide(side.right());
+      neighbourhood.moveToSide(side.right());
+      x++;
       updateNewCell(ruleset, neighbourhood, x, y);
     } while (x < CHUNK_SIZE - 1);
   } else {
     do {
-      x = neighbourhood.moveToSide(side.left());
+      neighbourhood.moveToSide(side.left());
+      x--;
       updateNewCell(ruleset, neighbourhood, x, y);
     } while (x > 0);
   }
@@ -38,11 +47,14 @@ void Chunk::generate(const Ruleset& ruleset, Neighbourhood& neighbourhood, const
   // Scan-line: we start at (0, 0) or equivalent, move right to (CHUNK_SIZE-1, 0), move down 1, move left to (0, 1), etc
   // We treat it like the side is Side::BOTTOM always and transform on function calls
   int x = 0, y = CHUNK_SIZE - affectingDistance;
-  neighbourhood.moveTo(chunkX, chunkY, x, y);
+  int relStartX = x, relStartY = y;
+  side.transform(relStartX, relStartY, CHUNK_SIZE, CHUNK_SIZE);
+  neighbourhood.moveTo(chunkX, chunkY, relStartX, relStartY);
   
   scanLine(ruleset, neighbourhood, x, y, side);
   while (y < CHUNK_SIZE - 1) {
-    y = neighbourhood.moveToSide(side);
+    neighbourhood.moveToSide(side);
+    y++;
     updateNewCell(ruleset, neighbourhood, x, y);
     scanLine(ruleset, neighbourhood, x, y, side);
   }
@@ -54,7 +66,7 @@ void Chunk::generate(const Ruleset& ruleset, Neighbourhood& neighbourhood) {
 }
 
 void Chunk::update() {
-  if (empty_ && nextGenEmpty_) {
+  if (isEmpty() && isNextGenEmpty()) {
     // no point, we won't update anything
     return;
   }
@@ -63,35 +75,36 @@ void Chunk::update() {
   memcpy(&cells_, &newCells_, sizeof(cells_)); // FIXME if there's a segfault, it's probably here
   memset(&newCells_, 0, sizeof(newCells_)); // the next generation starts at 0
   
-  empty_ = nextGenEmpty_;
-  nextGenEmpty_ = true; // until proven otherwise
+  liveCellCount_ = nextLiveCellCount_;
+  nextLiveCellCount_ = 0; // until proven otherwise
   
   emit chunkChanged(cells_);
 }
 
 bool Chunk::getCell(int x, int y) const {
-  if (x < 0 || y < 0 || x >= CHUNK_SIZE || y >= CHUNK_SIZE) {
-    throw std::invalid_argument("Cannot get cell with x or y greater than or equal to CHUNK_SIZE or less than 0");
-  }
+  checkInBounds(x, y);
   return cells_[x][y];
 }
 
 void Chunk::setCell(int x, int y, bool value) {
-  if (x < 0 || y < 0 || x >= CHUNK_SIZE || y >= CHUNK_SIZE) {
-    throw std::invalid_argument("Cannot set cell with x or y greater than or equal to CHUNK_SIZE or less than 0");
-  }
+  checkInBounds(x, y);
   if (cells_[x][y] != value) { // prevent emitting signals when nothing changes
     cells_[x][y] = value;
+    if (value) {
+      liveCellCount_++;
+    } else {
+      liveCellCount_--;
+    }
     emit chunkChanged(cells_);
   }
 }
 
 bool Chunk::isEmpty() const noexcept {
-  return empty_;
+  return liveCellCount_ == 0;
 }
 
 bool Chunk::isNextGenEmpty() const noexcept {
-  return nextGenEmpty_;
+  return nextLiveCellCount_ == 0;
 }
 
 // ChunkArray
@@ -167,10 +180,10 @@ ChunkArray::iterator ChunkArray::end() noexcept {
   return map_.end();
 }
 
-ChunkArray::const_iterator ChunkArray::begin() const noexcept {
+ChunkArray::const_iterator ChunkArray::cbegin() const noexcept {
   return map_.begin();
 }
 
-ChunkArray::const_iterator ChunkArray::end() const noexcept {
+ChunkArray::const_iterator ChunkArray::cend() const noexcept {
   return map_.end();
 }

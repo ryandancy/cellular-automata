@@ -61,16 +61,19 @@ void Automaton::tick() {
   }
   
   // Remove isolated empty chunks and add empty chunks beside non-padded non-empty ones
-  for (auto& chunkPair : chunkArray_) {
-    int x = chunkPair.first.first, y = chunkPair.first.second;
-    Chunk& chunk = *chunkPair.second;
+  // (Iterator idiom is to avoid getting errors for modifying chunkArray_ while iterating)
+  for (auto it = chunkArray_.cbegin(), nextIt = it; it != chunkArray_.cend(); it = nextIt) {
+    ++nextIt;
+    
+    int x = it->first.first, y = it->first.second;
+    Chunk& chunk = *it->second;
     
     if (chunk.isEmpty()) {
       // See if we can erase it
       bool hasAny = false;
       for (int dx = -1; dx <= 1; dx++) {
         for (int dy = -1; dy <= 1; dy++) {
-          if (dx == dy) continue;
+          if (dx == 0 && dy == 0) continue;
           if (chunkArray_.hasNonEmpty(x+dx, y+dy)) {
             hasAny = true;
             break;
@@ -78,7 +81,7 @@ void Automaton::tick() {
         }
         if (hasAny) break;
       }
-      
+    
       if (!hasAny) {
         chunkArray_.erase(x, y);
       }
@@ -87,7 +90,7 @@ void Automaton::tick() {
       // TODO it's possible that this isn't necessary because Neighbourhood checks this - test
       for (int dx = -1; dx <= 1; dx++) {
         for (int dy = -1; dy <= 1; dy++) {
-          if (dx == dy) continue;
+          if (dx == 0 && dy == 0) continue;
           chunkArray_.get(x+dx, y+dy); // creates if not present; TODO can we give ChunkArray::get a better name?
         }
       }
@@ -103,4 +106,8 @@ int Automaton::generation() const noexcept {
 
 ChunkArray& Automaton::chunkArray() noexcept {
   return chunkArray_;
+}
+
+Ruleset& Automaton::ruleset() noexcept {
+  return ruleset_;
 }

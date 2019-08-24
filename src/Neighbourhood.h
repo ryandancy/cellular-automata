@@ -22,27 +22,27 @@ public:
   // Move the Neighbourhood one cell to the right in its chunk, updating the live count. Return the new x coordinate.
   // Throw std::range_error if the x coordinate is already CHUNK_SIZE and we try to move out of the chunk.
   // Throw std::logic_error if the Neighbourhood is not ready (i.e. moveTo has not been called).
-  int moveRight();
+  void moveRight();
   
-  // Move the Neighbourhood one cell to the left in its chunk, updating the live count. Return the new x coordinate.
+  // Move the Neighbourhood one cell to the left in its chunk, updating the live count.
   // Throw std::range_error if the x coordinate is already 0 and we try to move out of the chunk.
   // Throw std::logic_error if the Neighbourhood is not ready (i.e. moveTo has not been called).
-  int moveLeft();
+  void moveLeft();
   
-  // Move the Neighbourhood one cell down in its chunk, updating the live count. Return the new y coordinate.
+  // Move the Neighbourhood one cell down in its chunk, updating the live count.
   // Throw std::range_error if the y coordinate is already CHUNK_SIZE and we try to move out of the chunk.
   // Throw std::logic_error if the Neighbourhood is not ready (i.e. moveTo has not been called).
-  int moveDown();
+  void moveDown();
   
-  // Move the Neighbourhood one cell up in its chunk, updating the live count. Return the new y coordinate.
+  // Move the Neighbourhood one cell up in its chunk, updating the live count.
   // Throw std::range_error if the y coordinate is already 0 and we try to move out of the chunk.
   // Throw std::logic_error if the Neighbourhood is not ready (i.e. moveTo has not been called).
-  int moveUp();
+  void moveUp();
   
-  // Move the Neighbourhood one cell towards the given side, updating the live count. Return the new x or y coordinate,
+  // Move the Neighbourhood one cell towards the given side, updating the live count.
   // depending on which side is moved towards. Throw std::range_error if this call tries to move out of the chunk.
   // Throw std::logic_error if the Neighbourhood is not ready (i.e. moveTo has not been called).
-  int moveToSide(const Side& side);
+  void moveToSide(const Side& side);
   
   // Get the live count of the Neighbourhood, i.e. the number of live cells in the Neighbourhood.
   unsigned int getLiveCount() const noexcept;

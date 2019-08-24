@@ -34,7 +34,7 @@ unsigned int Neighbourhood::getLiveCount() const noexcept {
   return liveCount_;
 }
 
-int Neighbourhood::moveRight() {
+void Neighbourhood::moveRight() {
   // Check that we can move right from here
   verifyReady();
   if (x_ == CHUNK_SIZE - 1) {
@@ -47,10 +47,10 @@ int Neighbourhood::moveRight() {
   if (getCell(0, 0)) liveCount_++;
   if (getCell(1, 0)) liveCount_--;
   
-  return ++x_;
+  x_++;
 }
 
-int Neighbourhood::moveLeft() {
+void Neighbourhood::moveLeft() {
   // Check that we can move left from here
   verifyReady();
   if (x_ == 0) {
@@ -63,10 +63,10 @@ int Neighbourhood::moveLeft() {
   if (getCell(0, 0)) liveCount_++;
   if (getCell(-1, 0)) liveCount_--;
   
-  return --x_;
+  x_--;
 }
 
-int Neighbourhood::moveDown() {
+void Neighbourhood::moveDown() {
   // Check that we can move down from here
   verifyReady();
   if (y_ == CHUNK_SIZE - 1) {
@@ -79,10 +79,10 @@ int Neighbourhood::moveDown() {
   if (getCell(0, 0)) liveCount_++;
   if (getCell(0, 1)) liveCount_--;
   
-  return ++y_;
+  y_++;
 }
 
-int Neighbourhood::moveUp() {
+void Neighbourhood::moveUp() {
   // Check that we can move up from here
   verifyReady();
   if (y_ == 0) {
@@ -95,20 +95,24 @@ int Neighbourhood::moveUp() {
   if (getCell(0, 0)) liveCount_++;
   if (getCell(0, -1)) liveCount_--;
   
-  return --y_;
+  y_--;
 }
 
-int Neighbourhood::moveToSide(const Side& side) {
+void Neighbourhood::moveToSide(const Side& side) {
   switch (side) {
     case Side::BOTTOM:
     default:
-      return moveDown();
+      moveDown();
+      break;
     case Side::LEFT:
-      return moveLeft();
+      moveLeft();
+      break;
     case Side::RIGHT:
-      return moveRight();
+      moveRight();
+      break;
     case Side::TOP:
-      return moveUp();
+      moveUp();
+      break;
   }
 }
 
@@ -183,8 +187,9 @@ namespace { // local to this file
 
 // MooreNeighbourhoodType
 
+// Note: the number of cells in a Moore neighbourhood of radius r is (2r+1)^2 - 1
 MooreNeighbourhoodType::MooreNeighbourhoodType(int radius)
-    : NeighbourhoodType(radius*radius - 1, radius), radius_(radius) {
+    : NeighbourhoodType((2*radius+1)*(2*radius+1) - 1, radius), radius_(radius) {
   checkRadius(radius_);
 }
 
