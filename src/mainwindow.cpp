@@ -28,10 +28,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
 }
 
 MainWindow::~MainWindow() {
-  for (const std::pair<const std::pair<int, int>, ChunkGraphicsItem*>& element : chunkGIMap_) {
-    // delete all the ChunkGraphicsItems
-    delete element.second;
-  }
+  // We don't delete all the ChunkGraphicsItems here because when we delete automaton_, the ChunkArray is destructed,
+  // which emits a chunkRemoved signal for each chunk, which is connected to removeChunkGraphicsItem, which deletes
+  // all the items.
   delete automaton_;
   automaton_ = nullptr;
   delete scene_;
