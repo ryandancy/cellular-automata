@@ -100,3 +100,7 @@ void Automaton::tick() {
 int Automaton::generation() const noexcept {
   return generation_;
 }
+
+const ChunkArray& Automaton::chunkArray() const noexcept {
+  return chunkArray_;
+}

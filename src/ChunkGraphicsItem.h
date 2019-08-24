@@ -32,6 +32,7 @@ private:
   
   const int x_, y_; // the coordinates of the Chunk
   bool (* cells_)[CHUNK_SIZE]; // the Chunk's array of cells; for some reason it wants to be bool (*)[CHUNK_SIZE]?
+  // we don't delete cells_ in a destructor because it's actually owned by the Chunk
 };
 
 #endif //GAME_OF_LIFE_CHUNKGRAPHICSITEM_H

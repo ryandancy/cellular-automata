@@ -92,7 +92,8 @@ ChunkArray::ChunkArray(Topology* topology) : topology_(topology) {} // adopt the
 
 ChunkArray::~ChunkArray() {
   // delete all the Chunks
-  for (std::pair<std::pair<int, int>, Chunk*> element : map_) {
+  for (const std::pair<const std::pair<int, int>, Chunk*>& element : map_) {
+    emit chunkRemoved(element.first.first, element.first.second);
     delete element.second;
   }
 }
@@ -111,8 +112,17 @@ Chunk& ChunkArray::get(int x, int y) {
   std::pair<int, int> xy(x, y);
   if (!map_.count(xy)) {
     map_.emplace(xy, new Chunk(x, y));
+    emit chunkAdded(x, y);
   }
   return *map_.at(xy);
+}
+
+Chunk& ChunkArray::at(int x, int y) const {
+  bool ok = topology_->transform(x, y);
+  if (!ok) {
+    return ChunkArray::EMPTY;
+  }
+  return *map_.at({x, y}); // throws std::out_of_range if not present
 }
 
 bool ChunkArray::contains(int x, int y) const {
@@ -132,6 +142,7 @@ bool ChunkArray::erase(int x, int y) {
     if (map_.count(xy)) {
       delete map_.at(xy);
       map_.erase(xy);
+      emit chunkRemoved(x, y);
       return true;
     }
   }

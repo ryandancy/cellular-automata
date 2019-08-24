@@ -86,6 +86,9 @@ public:
   // Get a reference to the Chunk at (x, y), creating one if not present
   Chunk& get(int x, int y);
   
+  // Get a reference to the Chunk at (x, y), throwing std::out_of_range if not present
+  Chunk& at(int x, int y) const;
+  
   // Does this ChunkArray contain a Chunk at (x, y)?
   bool contains(int x, int y) const;
   
@@ -102,8 +105,8 @@ public:
   const_iterator end() const noexcept;
   
 signals:
-  void add(int x, int y);
-  void remove(int x, int y);
+  void chunkAdded(int x, int y);
+  void chunkRemoved(int x, int y);
   
 private:
   // Empty Chunk for use when the Topology specifies a chunk is to be treated as empty

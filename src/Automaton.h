@@ -26,6 +26,9 @@ public:
   // Get the current generation. The first generation is 0.
   int generation() const noexcept;
   
+  // Get the chunk array behind the automaton.
+  const ChunkArray& chunkArray() const noexcept;
+  
 private:
   ChunkArray chunkArray_;
   Ruleset ruleset_;

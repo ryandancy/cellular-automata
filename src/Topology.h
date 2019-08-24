@@ -12,7 +12,7 @@ public:
   
   // Transform a possibly-invalid set of coordinates (x, y) to a valid set and return true, or return false if this
   // cannot be done and the chunk should be treated as fully empty.
-  virtual bool transform(int& x, int& y) = 0;
+  virtual bool transform(int& x, int& y) const = 0;
   
   virtual ~Topology() = default;
 };
@@ -41,7 +41,7 @@ class FixedTopology : public BoundedTopology {
 public:
   // If (x, y) is valid, this method will do nothing and return true. If not, it will return false, signifying
   // that the chunk should be treated as fully empty.
-  bool transform(int& x, int& y) override;
+  bool transform(int& x, int& y) const override;
 };
 
 // This is a Topology which wraps around in both the x and y directions. Topologically, it forms a torus.
@@ -50,14 +50,14 @@ class WrappingTopology : public BoundedTopology {
   
 public:
   // This implementation will wrap x and y as many times as necessary. It will always return true.
-  bool transform(int& x, int& y) override;
+  bool transform(int& x, int& y) const override;
 };
 
 // This is a Topology with no restrictions whatsoever. All chunks are valid and no transformations are performed.
 class UnboundedTopology : public Topology {
 public:
   bool valid(int x, int y) const override; // Always returns true - all chunks are valid.
-  bool transform(int& x, int& y) override; // Always returns true and does not modify x and y.
+  bool transform(int& x, int& y) const override; // Always returns true and does not modify x and y.
 };
 
 #endif //GAME_OF_LIFE_TOPOLOGY_H

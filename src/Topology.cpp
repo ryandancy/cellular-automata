@@ -15,14 +15,14 @@ bool BoundedTopology::valid(int x, int y) const {
 
 // FixedTopology
 
-bool FixedTopology::transform(int& x, int& y) {
+bool FixedTopology::transform(int& x, int& y) const {
   // FixedTopology isn't going to actually transform it, it'll just declare it invalid if it's outside the limits
   return valid(x, y);
 }
 
 // WrappingTopology
 
-bool WrappingTopology::transform(int& x, int& y) {
+bool WrappingTopology::transform(int& x, int& y) const {
   // wrapping is accomplished with modulus
   x %= width_;
   if (x < 0) x += width_;
@@ -40,7 +40,7 @@ bool UnboundedTopology::valid(int x, int y) const {
   return true; // all chunks are valid
 }
 
-bool UnboundedTopology::transform(int& x, int& y) {
+bool UnboundedTopology::transform(int& x, int& y) const {
   return true; // no transformations are performed since all chunks are valid
 }
 
