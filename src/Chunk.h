@@ -2,7 +2,7 @@
 #define GAME_OF_LIFE_CHUNK_H
 
 #include <memory>
-#include <queue>
+#include <unordered_set>
 #include <unordered_map>
 #include <utility>
 
@@ -82,8 +82,9 @@ class ChunkArray : public QObject {
   
 public:
   typedef std::unordered_map<std::pair<int, int>, Chunk*, pair_hash>::iterator iterator;
-  typedef std::unordered_map<std::pair<int, int>, Chunk*, pair_hash>::const_iterator const_iterator;
   typedef std::unordered_map<std::pair<int, int>, Chunk*, pair_hash>::size_type size_type;
+  
+  typedef std::unordered_set<std::pair<int, int>, pair_hash>::iterator queue_iterator;
   
   // Initialize this ChunkArray with the specified Topology
   explicit ChunkArray(Topology* topology);
@@ -109,17 +110,26 @@ public:
   // (x, y). This is useful when insertion must be delayed until iterating over the current chunks is done.
   void queueForInsertion(int x, int y);
   
-  // Insert all chunk positions previously queued via queueForInsertion(x, y).
+  // Insert all chunk positions previously queued via queueForInsertion(x, y). Do not clear the queue.
   void insertAllInQueue();
+  
+  // If you call setIgnoringQueueInsertions(true), until you call setIgnoringQueueInsertions(false), queueForInsertion()
+  // will ignore all calls. This is useful when you know no useful chunks will be queued.
+  void setIgnoringQueueInsertions(bool ignore);
+  
+  // Clear the queue of coordinates to insert.
+  void clearQueue();
+  
+  // Iterators over the queue of coordinates to insert.
+  queue_iterator queueBegin() noexcept;
+  queue_iterator queueEnd() noexcept;
   
   // Erase the Chunk at (x, y) if present, returning whether a Chunk was erased.
   bool erase(int x, int y);
   
   // Iterators, iterating over pairs of coordinate pairs and pointers to corresponding Chunks
-  iterator begin() noexcept; // TODO remove these?
+  iterator begin() noexcept;
   iterator end() noexcept;
-  const_iterator cbegin() const noexcept;
-  const_iterator cend() const noexcept;
   
 signals:
   void chunkAdded(int x, int y);
@@ -144,7 +154,8 @@ private:
   std::unordered_map<std::pair<int, int>, Chunk*, pair_hash> map_;
   std::unique_ptr<Topology> topology_;
   
-  std::queue<std::pair<int, int> > coordinateQueue_; // holds coordinates inserted via queueForInsertion(x, y)
+  std::unordered_set<std::pair<int, int>, pair_hash> coordinateQueue_; // holds coordinates queued for insertion
+  bool ignoreQueueInsertion_ = false;
 };
 
 #endif //GAME_OF_LIFE_CHUNK_H

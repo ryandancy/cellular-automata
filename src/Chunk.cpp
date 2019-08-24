@@ -159,15 +159,31 @@ bool ChunkArray::insertOrNoop(int x, int y) {
 }
 
 void ChunkArray::queueForInsertion(int x, int y) {
-  coordinateQueue_.emplace(std::make_pair(x, y));
+  if (!ignoreQueueInsertion_) {
+    coordinateQueue_.emplace(std::make_pair(x, y));
+  }
 }
 
 void ChunkArray::insertAllInQueue() {
-  while (!coordinateQueue_.empty()) {
-    std::pair<int, int>& xy = coordinateQueue_.front();
+  for (const std::pair<int, int>& xy : coordinateQueue_) {
     insertOrNoop(xy.first, xy.second);
-    coordinateQueue_.pop();
   }
+}
+
+void ChunkArray::clearQueue() {
+  coordinateQueue_.clear();
+}
+
+void ChunkArray::setIgnoringQueueInsertions(bool ignore) {
+  ignoreQueueInsertion_ = ignore;
+}
+
+ChunkArray::queue_iterator ChunkArray::queueBegin() noexcept {
+  return coordinateQueue_.begin();
+}
+
+ChunkArray::queue_iterator ChunkArray::queueEnd() noexcept {
+  return coordinateQueue_.end();
 }
 
 bool ChunkArray::erase(int x, int y) {
@@ -190,13 +206,5 @@ ChunkArray::iterator ChunkArray::begin() noexcept {
 }
 
 ChunkArray::iterator ChunkArray::end() noexcept {
-  return map_.end();
-}
-
-ChunkArray::const_iterator ChunkArray::cbegin() const noexcept {
-  return map_.begin();
-}
-
-ChunkArray::const_iterator ChunkArray::cend() const noexcept {
   return map_.end();
 }

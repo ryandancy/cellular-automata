@@ -33,6 +33,9 @@ public:
   Ruleset& ruleset() noexcept;
   
 private:
+  // Call the appropriate generation functions for the given chunk, which is assumed to be empty.
+  void generateEmptyChunk(int x, int y, Chunk& chunk, Neighbourhood& neighbourhood, int affectingDistance);
+  
   ChunkArray chunkArray_;
   Ruleset ruleset_;
   int generation_;

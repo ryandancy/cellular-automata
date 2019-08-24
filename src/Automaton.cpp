@@ -16,6 +16,31 @@ void Automaton::setNeighbourhoodType(NeighbourhoodType* neighbourhoodType) {
   ruleset_.setNeighbourhoodType(neighbourhoodType);
 }
 
+void Automaton::generateEmptyChunk(int x, int y, Chunk& chunk, Neighbourhood& neighbourhood, int affectingDistance) {
+  // Only generate on sides where it's possible to affect something
+  bool left = chunkArray_.hasNonEmpty(x-1, y),
+      right = chunkArray_.hasNonEmpty(x+1, y),
+      top = chunkArray_.hasNonEmpty(x, y-1),
+      bottom = chunkArray_.hasNonEmpty(x, y+1),
+      leftTop = chunkArray_.hasNonEmpty(x-1, y-1),
+      leftBottom = chunkArray_.hasNonEmpty(x-1, y+1),
+      rightTop = chunkArray_.hasNonEmpty(x+1, y-1),
+      rightBottom = chunkArray_.hasNonEmpty(x+1, y+1);
+  
+  if (left || leftTop || leftBottom) {
+    chunk.generate(ruleset_, neighbourhood, Side::LEFT, affectingDistance);
+  }
+  if (right || rightTop || rightBottom) {
+    chunk.generate(ruleset_, neighbourhood, Side::RIGHT, affectingDistance);
+  }
+  if (top || leftTop || rightTop) {
+    chunk.generate(ruleset_, neighbourhood, Side::TOP, affectingDistance);
+  }
+  if (bottom || leftBottom || rightBottom) {
+    chunk.generate(ruleset_, neighbourhood, Side::BOTTOM, affectingDistance);
+  }
+}
+
 void Automaton::tick() {
   // This is the one Neighbourhood for this tick - smart pointer for exception safety
   std::unique_ptr<Neighbourhood> neighbourhood(ruleset_.getNeighbourhoodType().makeNeighbourhood(chunkArray_));
@@ -27,45 +52,35 @@ void Automaton::tick() {
     Chunk& chunk = *chunkPair.second;
     
     if (chunk.isEmpty()) {
-      // Only generate on sides where it's possible to affect something
-      bool left = chunkArray_.hasNonEmpty(x-1, y),
-          right = chunkArray_.hasNonEmpty(x+1, y),
-          top = chunkArray_.hasNonEmpty(x, y-1),
-          bottom = chunkArray_.hasNonEmpty(x, y+1),
-          leftTop = chunkArray_.hasNonEmpty(x-1, y-1),
-          leftBottom = chunkArray_.hasNonEmpty(x-1, y+1),
-          rightTop = chunkArray_.hasNonEmpty(x+1, y-1),
-          rightBottom = chunkArray_.hasNonEmpty(x+1, y+1);
-      
-      if (left || leftTop || leftBottom) {
-        chunk.generate(ruleset_, *neighbourhood, Side::LEFT, affectingDistance);
-      }
-      if (right || rightTop || rightBottom) {
-        chunk.generate(ruleset_, *neighbourhood, Side::RIGHT, affectingDistance);
-      }
-      if (top || leftTop || rightTop) {
-        chunk.generate(ruleset_, *neighbourhood, Side::TOP, affectingDistance);
-      }
-      if (bottom || leftBottom || rightBottom) {
-        chunk.generate(ruleset_, *neighbourhood, Side::BOTTOM, affectingDistance);
-      }
+      generateEmptyChunk(x, y, chunk, *neighbourhood, affectingDistance);
     } else {
       // Generate the entire chunk
       chunk.generate(ruleset_, *neighbourhood);
     }
   }
   
+  // Insert the queued chunks, generate them
+  // We ignore queue insertions because the chunks are empty and so can't add any new useful chunks
+  chunkArray_.insertAllInQueue();
+  chunkArray_.setIgnoringQueueInsertions(true);
+  
+  for (auto queueIt = chunkArray_.queueBegin(); queueIt != chunkArray_.queueEnd(); ++queueIt) {
+    // TODO to squeeze out an extra three CPU cycles, maybe make a ChunkArray::at(std::pair<int, int>) overload?
+    generateEmptyChunk(queueIt->first, queueIt->second, chunkArray_.at(queueIt->first, queueIt->second),
+        *neighbourhood, affectingDistance);
+  }
+  
+  chunkArray_.setIgnoringQueueInsertions(false);
+  chunkArray_.clearQueue();
+  
   // Update every chunk
   for (auto& chunkPair : chunkArray_) {
     chunkPair.second->update();
   }
   
-  // Insert the queued chunks here so we can remove useless ones
-  chunkArray_.insertAllInQueue();
-  
   // Remove isolated empty chunks and add empty chunks beside non-padded non-empty ones
   // (Iterator idiom is to avoid getting errors for modifying chunkArray_ while iterating)
-  for (auto it = chunkArray_.cbegin(), nextIt = it; it != chunkArray_.cend(); it = nextIt) {
+  for (auto it = chunkArray_.begin(), nextIt = it; it != chunkArray_.end(); it = nextIt) {
     ++nextIt;
     
     int x = it->first.first, y = it->first.second;
