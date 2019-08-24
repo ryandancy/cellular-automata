@@ -18,7 +18,7 @@ void ChunkGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*
   
   // draw all cells as dead first
   painter->setBrush(deadBrush());
-  painter->setPen(Qt::transparent); // no outline
+//  painter->setPen(Qt::transparent); // no outline
   painter->drawRect(bounds);
   
   // treat nullptr as empty chunk (all dead)

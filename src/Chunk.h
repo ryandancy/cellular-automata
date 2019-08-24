@@ -2,6 +2,7 @@
 #define GAME_OF_LIFE_CHUNK_H
 
 #include <memory>
+#include <queue>
 #include <unordered_map>
 #include <utility>
 
@@ -74,6 +75,7 @@ private:
 // The Topology may modify coordinates as it wishes.
 // All hail the great and mighty Topology.
 // TODO I feel like there's something semantically wrong with returning a reference in get() and pointers via iterators
+// TODO Do we really need the bool return types on insertOrNoop and erase?
 class ChunkArray : public QObject {
   Q_OBJECT
   
@@ -90,9 +92,6 @@ public:
   // How many Chunks are stored?
   size_type size();
   
-  // Get a reference to the Chunk at (x, y), creating one if not present
-  Chunk& get(int x, int y);
-  
   // Get a reference to the Chunk at (x, y), throwing std::out_of_range if not present
   Chunk& at(int x, int y) const;
   
@@ -102,7 +101,17 @@ public:
   // Does this ChunkArray contain a non-empty Chunk at (x, y)?
   bool hasNonEmpty(int x, int y);
   
-  // Erase the Chunk at (x, y) if present, returning whether a Chunk was erased
+  // Attempt to insert an empty Chunk at (x, y). Return whether a Chunk was inserted. Does nothing otherwise.
+  bool insertOrNoop(int x, int y);
+  
+  // Queue a chunk position (x, y) such that the next time insertAllInQueue() is called, a Chunk will be inserted at
+  // (x, y). This is useful when insertion must be delayed until iterating over the current chunks is done.
+  void queueForInsertion(int x, int y);
+  
+  // Insert all chunk positions previously queued via queueForInsertion(x, y).
+  void insertAllInQueue();
+  
+  // Erase the Chunk at (x, y) if present, returning whether a Chunk was erased.
   bool erase(int x, int y);
   
   // Iterators, iterating over pairs of coordinate pairs and pointers to corresponding Chunks
@@ -130,6 +139,8 @@ private:
   
   std::unordered_map<std::pair<int, int>, Chunk*, pair_hash> map_;
   std::unique_ptr<Topology> topology_;
+  
+  std::queue<std::pair<int, int> > coordinateQueue_; // holds coordinates inserted via queueForInsertion(x, y)
 };
 
 #endif //GAME_OF_LIFE_CHUNK_H

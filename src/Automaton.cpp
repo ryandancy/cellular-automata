@@ -60,6 +60,9 @@ void Automaton::tick() {
     chunkPair.second->update();
   }
   
+  // Insert the queued chunks here so we can remove useless ones
+  chunkArray_.insertAllInQueue();
+  
   // Remove isolated empty chunks and add empty chunks beside non-padded non-empty ones
   // (Iterator idiom is to avoid getting errors for modifying chunkArray_ while iterating)
   for (auto it = chunkArray_.cbegin(), nextIt = it; it != chunkArray_.cend(); it = nextIt) {
@@ -91,7 +94,7 @@ void Automaton::tick() {
       for (int dx = -1; dx <= 1; dx++) {
         for (int dy = -1; dy <= 1; dy++) {
           if (dx == 0 && dy == 0) continue;
-          chunkArray_.get(x+dx, y+dy); // creates if not present; TODO can we give ChunkArray::get a better name?
+          chunkArray_.insertOrNoop(x + dx, y + dy); // does nothing if present
         }
       }
     }

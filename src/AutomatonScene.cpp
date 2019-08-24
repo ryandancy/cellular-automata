@@ -24,7 +24,8 @@ void AutomatonScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
   int cellX = (int) (relCellX / (ChunkGraphicsItem::SIZE / CHUNK_SIZE));
   int cellY = (int) (relCellY / (ChunkGraphicsItem::SIZE / CHUNK_SIZE));
   
-  // Flip the cell in the chunk
-  Chunk& chunk = automaton_.chunkArray().get(chunkX, chunkY); // add chunk if it doesn't exist
+  // Flip the cell in the chunk, adding it if it doesn't exist
+  automaton_.chunkArray().insertOrNoop(chunkX, chunkY);
+  Chunk& chunk = automaton_.chunkArray().at(chunkX, chunkY);
   chunk.setCell(cellX, cellY, !chunk.getCell(cellX, cellY));
 }

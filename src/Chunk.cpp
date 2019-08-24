@@ -72,8 +72,8 @@ void Chunk::update() {
   }
   
   // this is probably performance critical, so memcpy/memset it is
-  memcpy(&cells_, &newCells_, sizeof(cells_)); // FIXME if there's a segfault, it's probably here
-  memset(&newCells_, 0, sizeof(newCells_)); // the next generation starts at 0
+  memcpy(cells_, newCells_, CHUNK_SIZE*CHUNK_SIZE*sizeof(cells_[0][0]));
+  memset(newCells_, 0, CHUNK_SIZE*CHUNK_SIZE*sizeof(newCells_[0][0])); // the next generation starts at 0
   
   liveCellCount_ = nextLiveCellCount_;
   nextLiveCellCount_ = 0; // until proven otherwise
@@ -125,21 +125,6 @@ ChunkArray::size_type ChunkArray::size() {
   return map_.size();
 }
 
-Chunk& ChunkArray::get(int x, int y) {
-  bool ok = topology_->transform(x, y);
-  if (!ok) {
-    return ChunkArray::EMPTY;
-  }
-  
-  // Create a Chunk if it isn't there - we need to call Chunk's constructor ourselves
-  std::pair<int, int> xy(x, y);
-  if (!map_.count(xy)) {
-    map_.emplace(xy, new Chunk(x, y));
-    emit chunkAdded(x, y);
-  }
-  return *map_.at(xy);
-}
-
 Chunk& ChunkArray::at(int x, int y) const {
   bool ok = topology_->transform(x, y);
   if (!ok) {
@@ -154,7 +139,34 @@ bool ChunkArray::contains(int x, int y) const {
 }
 
 bool ChunkArray::hasNonEmpty(int x, int y) {
-  return contains(x, y) && !get(x, y).isEmpty();
+  return contains(x, y) && !at(x, y).isEmpty();
+}
+
+bool ChunkArray::insertOrNoop(int x, int y) {
+  bool ok = topology_->transform(x, y);
+  if (!ok) {
+    return false;
+  }
+  
+  std::pair<int, int> xy(x, y);
+  if (map_.count(xy)) {
+    return false;
+  }
+  map_.emplace(xy, new Chunk(x, y));
+  emit chunkAdded(x, y);
+  return true;
+}
+
+void ChunkArray::queueForInsertion(int x, int y) {
+  coordinateQueue_.emplace(std::make_pair(x, y));
+}
+
+void ChunkArray::insertAllInQueue() {
+  while (!coordinateQueue_.empty()) {
+    std::pair<int, int>& xy = coordinateQueue_.front();
+    insertOrNoop(xy.first, xy.second);
+    coordinateQueue_.pop();
+  }
 }
 
 bool ChunkArray::erase(int x, int y) {

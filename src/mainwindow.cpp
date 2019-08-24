@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
   updateStatusBar();
   
   // Add one chunk at (0, 0) to ward off QGraphicsView weirdness
-  automaton_->chunkArray().get(0, 0);
+  automaton_->chunkArray().insertOrNoop(0, 0);
 }
 
 MainWindow::~MainWindow() {

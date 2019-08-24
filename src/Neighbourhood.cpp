@@ -160,7 +160,12 @@ bool Neighbourhood::getCell(int dx, int dy) const {
     ny %= CHUNK_SIZE;
   }
   
-  return chunkArray_.get(ncx, ncy).getCell(nx, ny);
+  if (chunkArray_.contains(ncx, ncy)) {
+    return chunkArray_.at(ncx, ncy).getCell(nx, ny);
+  } else {
+    chunkArray_.queueForInsertion(ncx, ncy); // insert it later so we don't process it this time
+    return false; // default is empty - TODO this is specified both here and when EMPTY is returned in ChunkArray
+  }
 }
 
 // NeighbourhoodType
