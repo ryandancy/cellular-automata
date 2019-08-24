@@ -9,11 +9,8 @@ ChunkGraphicsItem::ChunkGraphicsItem(const Chunk& chunk) : x_(chunk.chunkX), y_(
 }
 
 QRectF ChunkGraphicsItem::boundingRect() const {
-  // Centre it on (x_, y_)
-  qreal centreX = x_ * SIZE;
-  qreal centreY = y_ * SIZE;
-  return {centreX - (SIZE/2), centreY - (SIZE/2),
-      centreX + (SIZE/2), centreY + (SIZE/2)};
+  // Top-left is (x_*SIZE, y_*SIZE)
+  return {x_ * SIZE, y_ * SIZE, SIZE, SIZE};
 }
 
 void ChunkGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) {
@@ -21,6 +18,7 @@ void ChunkGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*
   
   // draw all cells as dead first
   painter->setBrush(deadBrush());
+  painter->setPen(Qt::transparent); // no outline
   painter->drawRect(bounds);
   
   // treat nullptr as empty chunk (all dead)
@@ -47,11 +45,11 @@ void ChunkGraphicsItem::updateCells(bool (* newCells)[CHUNK_SIZE]) {
 const QBrush& ChunkGraphicsItem::liveBrush() const {
   // this method and ChunkGraphicsItem::deadBrush() are just wrappers for static const local variables
   // used in order to delay initialization so that if the constructor throws the exception can be caught
-  static const QBrush LIVE_BRUSH(QColor(0, 0, 0)); // live cells are black, currently
+  static const QBrush LIVE_BRUSH(Qt::black); // dead cells are black, currently
   return LIVE_BRUSH;
 }
 
 const QBrush& ChunkGraphicsItem::deadBrush() const {
-  static const QBrush DEAD_BRUSH(QColor(255, 255, 255)); // dead cells are white, currently
+  static const QBrush DEAD_BRUSH(Qt::white); // dead cells are white, currently
   return DEAD_BRUSH;
 }

@@ -101,6 +101,6 @@ int Automaton::generation() const noexcept {
   return generation_;
 }
 
-const ChunkArray& Automaton::chunkArray() const noexcept {
+ChunkArray& Automaton::chunkArray() noexcept {
   return chunkArray_;
 }

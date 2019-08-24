@@ -4,22 +4,27 @@
 #include <unordered_map>
 #include <utility>
 
-#include <QGraphicsScene>
 #include <QGraphicsItem>
 #include <QMainWindow>
+#include <QMouseEvent>
+#include <QWidget>
 
 #include "Automaton.h"
+#include "AutomatonScene.h"
 #include "ChunkGraphicsItem.h"
 #include "util.h"
 
 // TODO Separate UI from model via file structure, also figure out namespaces
 // TODO Put the model on a separate thread from the UI
 // TODO Allow customization of Topology + NeighbourhoodType
+// TODO Add "painting" live cells
+// TODO Allow scrolling beyond edge of ChunkGraphicsItems - https://stackoverflow.com/q/19207153?
 
 namespace Ui {
   class MainWindow; // Qt will fill this in from mainwindow.ui
 }
 
+// The main window of the application.
 class MainWindow : public QMainWindow {
   Q_OBJECT // Qt macro
   
@@ -33,7 +38,7 @@ public slots:
   
 private:
   Ui::MainWindow* ui_;
-  QGraphicsScene* scene_; // where we draw the actual automaton
+  AutomatonScene* scene_; // where we draw the actual automaton
   Automaton* automaton_; // the model itself
   
   // Analogous to ChunkArray's map, but for ChunkGraphicsItems

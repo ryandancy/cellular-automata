@@ -76,6 +76,16 @@ bool Chunk::getCell(int x, int y) const {
   return cells_[x][y];
 }
 
+void Chunk::setCell(int x, int y, bool value) {
+  if (x < 0 || y < 0 || x >= CHUNK_SIZE || y >= CHUNK_SIZE) {
+    throw std::invalid_argument("Cannot set cell with x or y greater than or equal to CHUNK_SIZE or less than 0");
+  }
+  if (cells_[x][y] != value) { // prevent emitting signals when nothing changes
+    cells_[x][y] = value;
+    emit chunkChanged(cells_);
+  }
+}
+
 bool Chunk::isEmpty() const noexcept {
   return empty_;
 }

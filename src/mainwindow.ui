@@ -50,6 +50,9 @@
                 <verstretch>0</verstretch>
               </sizepolicy>
             </property>
+            <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+            </property>
           </widget>
         </item>
       </layout>
@@ -76,7 +79,7 @@
         <addaction name="actionNextGeneration"/>
         <addaction name="actionPlay"/>
         <addaction name="actionPause"/>
-        <addaction name="actionReset" />
+        <addaction name="actionReset"/>
       </widget>
       <addaction name="menuAutomaton"/>
     </widget>

@@ -17,11 +17,14 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
   ui_->setupUi(this);
   QMainWindow::centralWidget()->layout()->setContentsMargins(0, 0, 0, 0); // make it flush
   
-  scene_ = new QGraphicsScene(this);
+  scene_ = new AutomatonScene(*automaton_, this);
   ui_->graphics->setScene(scene_);
   
   connect(&automaton_->chunkArray(), &ChunkArray::chunkAdded, this, &MainWindow::addChunkGraphicsItem);
   connect(&automaton_->chunkArray(), &ChunkArray::chunkRemoved, this, &MainWindow::removeChunkGraphicsItem);
+  
+  // Add one chunk at (0, 0) to ward off QGraphicsView weirdness
+  automaton_->chunkArray().get(0, 0);
 }
 
 MainWindow::~MainWindow() {
@@ -46,7 +49,9 @@ void MainWindow::addChunkGraphicsItem(int x, int y) {
                  << std::endl;
     chunkGIMap_.erase(xy);
   }
-  chunkGIMap_.emplace(xy, new ChunkGraphicsItem(automaton_->chunkArray().at(x, y)));
+  auto* item = new ChunkGraphicsItem(automaton_->chunkArray().at(x, y));
+  scene_->addItem(item);
+  chunkGIMap_.emplace(xy, item);
 }
 
 void MainWindow::removeChunkGraphicsItem(int x, int y) {
@@ -57,6 +62,8 @@ void MainWindow::removeChunkGraphicsItem(int x, int y) {
                  "ChunkGraphicsItem at (" << x << ", " << y << "), but there isn't one there!" << std::endl;
     return;
   }
-  delete chunkGIMap_.at(xy); // got to clean it up
+  ChunkGraphicsItem* item = chunkGIMap_.at(xy);
+  scene_->removeItem(item);
+  delete item;
   chunkGIMap_.erase(xy);
 }

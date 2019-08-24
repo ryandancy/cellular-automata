@@ -40,6 +40,10 @@ public:
   // Throw std::invalid_argument if x >= CHUNK_SIZE, y >= CHUNK_SIZE, x < 0, or y < 0.
   virtual bool getCell(int x, int y) const;
   
+  // Set the value of the cell at (x, y).
+  // Throw std::invalid_argument if x >= CHUNK_SIZE, y >= CHUNK_SIZE, x < 0, or y < 0.
+  virtual void setCell(int x, int y, bool value);
+  
   virtual bool isEmpty() const noexcept; // Is the whole Chunk empty?
   virtual bool isNextGenEmpty() const noexcept; // Is the next generation currently empty?
   
@@ -116,6 +120,7 @@ private:
     void generate(const Ruleset&, Neighbourhood&) override {}
     void update() override {}
     bool getCell(int, int) const override { return false; }
+    void setCell(int, int, bool) override {} // prevent emitting signals
     bool isEmpty() const noexcept override { return true; }
     bool isNextGenEmpty() const noexcept override { return true; }
   } static EMPTY;

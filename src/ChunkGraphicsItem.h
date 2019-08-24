@@ -14,7 +14,7 @@ class ChunkGraphicsItem : public QObject, public QGraphicsItem {
   Q_OBJECT
   
 public:
-  static constexpr qreal SIZE = 120.0; // A chunk's size on-screen. A cell is ChunkGraphicsItem::SIZE / CHUNK_SIZE.
+  static constexpr qreal SIZE = 150.0; // A chunk's size on-screen. A cell is ChunkGraphicsItem::SIZE / CHUNK_SIZE.
   
   // Initialize a ChunkGraphicsItem representing the specified Chunk. Connect the Chunk's signals to our slots.
   explicit ChunkGraphicsItem(const Chunk& chunk);

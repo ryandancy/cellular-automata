@@ -27,7 +27,7 @@ public:
   int generation() const noexcept;
   
   // Get the chunk array behind the automaton.
-  const ChunkArray& chunkArray() const noexcept;
+  ChunkArray& chunkArray() noexcept;
   
 private:
   ChunkArray chunkArray_;
