@@ -12,7 +12,9 @@
 
 // Dear future me who knows to avoid tight coupling and other cool software engineering patterns: I'm sorry
 
-MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainWindow),
+constexpr int MainWindow::PLAY_DELAY;
+
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainWindow), tickTimer_(new QTimer(this)),
     // TODO this is just a default - allow customization of topology and neighbourhood type
     automaton_(new Automaton(new FixedTopology(20, 20),
         new MooreNeighbourhoodType(1))) {
@@ -32,6 +34,12 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
   connect(&automaton_->chunkArray(), &ChunkArray::chunkRemoved, this, &MainWindow::removeChunkGraphicsItem);
   
   connect(ui_->actionNextGeneration, &QAction::triggered, this, &MainWindow::nextGeneration);
+  ui_->actionPause->setEnabled(false);
+  
+  connect(ui_->actionPlay, &QAction::triggered, this, &MainWindow::play);
+  connect(ui_->actionPause, &QAction::triggered, this, &MainWindow::pause);
+  
+  connect(tickTimer_, &QTimer::timeout, this, &MainWindow::nextGeneration);
   
   updateStatusBar();
   
@@ -43,6 +51,9 @@ MainWindow::~MainWindow() {
   // We don't delete all the ChunkGraphicsItems here because when we delete automaton_, the ChunkArray is destructed,
   // which emits a chunkRemoved signal for each chunk, which is connected to removeChunkGraphicsItem, which deletes
   // all the items.
+  tickTimer_->stop();
+  delete tickTimer_;
+  tickTimer_ = nullptr;
   delete automaton_;
   automaton_ = nullptr;
   delete scene_;
@@ -82,6 +93,18 @@ void MainWindow::removeChunkGraphicsItem(int x, int y) {
 void MainWindow::nextGeneration() {
   automaton_->tick();
   updateStatusBar();
+}
+
+void MainWindow::play() {
+  tickTimer_->start(PLAY_DELAY);
+  ui_->actionPlay->setEnabled(false);
+  ui_->actionPause->setEnabled(true);
+}
+
+void MainWindow::pause() {
+  tickTimer_->stop();
+  ui_->actionPause->setEnabled(false);
+  ui_->actionPlay->setEnabled(true);
 }
 
 void MainWindow::updateStatusBar() const {

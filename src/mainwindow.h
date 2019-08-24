@@ -6,7 +6,7 @@
 
 #include <QGraphicsItem>
 #include <QMainWindow>
-#include <QMouseEvent>
+#include <QTimer>
 #include <QWidget>
 
 #include "Automaton.h"
@@ -38,13 +38,18 @@ public slots:
   
 private slots:
   void nextGeneration();
+  void play();
+  void pause();
   
 private:
   void updateStatusBar() const; // Update "Generation: X" in the status bar
   
+  static constexpr int PLAY_DELAY = 200; // TODO make this configurable
+  
   Ui::MainWindow* ui_;
   AutomatonScene* scene_; // where we draw the actual automaton
   Automaton* automaton_; // the model itself
+  QTimer* tickTimer_; // for playing
   
   // Analogous to ChunkArray's map, but for ChunkGraphicsItems
   std::unordered_map<std::pair<int, int>, ChunkGraphicsItem*, pair_hash> chunkGIMap_;
