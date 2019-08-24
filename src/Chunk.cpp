@@ -201,6 +201,16 @@ bool ChunkArray::erase(int x, int y) {
   return false;
 }
 
+void ChunkArray::clear() {
+  for (auto it = map_.begin(), nextIt = it; it != map_.end(); it = nextIt) {
+    ++nextIt;
+    delete it->second;
+    map_.erase(it->first);
+    emit chunkRemoved(it->first.first, it->first.second);
+  }
+  clearQueue();
+}
+
 ChunkArray::iterator ChunkArray::begin() noexcept {
   return map_.begin();
 }

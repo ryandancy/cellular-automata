@@ -118,6 +118,11 @@ void Automaton::tick() {
   generation_++; // we've accomplished something
 }
 
+void Automaton::reset() {
+  chunkArray_.clear();
+  generation_ = 0;
+}
+
 int Automaton::generation() const noexcept {
   return generation_;
 }

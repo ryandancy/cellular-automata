@@ -127,6 +127,9 @@ public:
   // Erase the Chunk at (x, y) if present, returning whether a Chunk was erased.
   bool erase(int x, int y);
   
+  // Erase all Chunks and clear the queue.
+  void clear();
+  
   // Iterators, iterating over pairs of coordinate pairs and pointers to corresponding Chunks
   iterator begin() noexcept;
   iterator end() noexcept;

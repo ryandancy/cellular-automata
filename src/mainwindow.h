@@ -40,6 +40,7 @@ private slots:
   void nextGeneration();
   void play();
   void pause();
+  void reset();
   
 private:
   void updateStatusBar() const; // Update "Generation: X" in the status bar

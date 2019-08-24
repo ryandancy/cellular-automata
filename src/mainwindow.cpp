@@ -34,11 +34,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
   connect(&automaton_->chunkArray(), &ChunkArray::chunkRemoved, this, &MainWindow::removeChunkGraphicsItem);
   
   connect(ui_->actionNextGeneration, &QAction::triggered, this, &MainWindow::nextGeneration);
-  ui_->actionPause->setEnabled(false);
-  
   connect(ui_->actionPlay, &QAction::triggered, this, &MainWindow::play);
   connect(ui_->actionPause, &QAction::triggered, this, &MainWindow::pause);
+  connect(ui_->actionReset, &QAction::triggered, this, &MainWindow::reset);
   
+  ui_->actionPause->setEnabled(false);
   connect(tickTimer_, &QTimer::timeout, this, &MainWindow::nextGeneration);
   
   updateStatusBar();
@@ -98,6 +98,7 @@ void MainWindow::nextGeneration() {
 void MainWindow::play() {
   tickTimer_->start(PLAY_DELAY);
   ui_->actionPlay->setEnabled(false);
+  ui_->actionNextGeneration->setEnabled(false);
   ui_->actionPause->setEnabled(true);
 }
 
@@ -105,6 +106,17 @@ void MainWindow::pause() {
   tickTimer_->stop();
   ui_->actionPause->setEnabled(false);
   ui_->actionPlay->setEnabled(true);
+  ui_->actionNextGeneration->setEnabled(true);
+}
+
+void MainWindow::reset() {
+  // Stop the timer, reset the automaton, and re-add chunk (0, 0) to avoid bugging out
+  if (tickTimer_->isActive()) {
+    pause();
+  }
+  automaton_->reset();
+  automaton_->chunkArray().insertOrNoop(0, 0);
+  updateStatusBar();
 }
 
 void MainWindow::updateStatusBar() const {

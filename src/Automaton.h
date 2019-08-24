@@ -23,6 +23,9 @@ public:
   // Advance the entire automaton to the next generation.
   void tick();
   
+  // Reset the entire automaton. Remove all Chunks and reset the generation count.
+  void reset();
+  
   // Get the current generation. The first generation is 0.
   int generation() const noexcept;
   
