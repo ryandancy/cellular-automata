@@ -81,7 +81,14 @@
         <addaction name="actionPause"/>
         <addaction name="actionReset"/>
       </widget>
+      <widget class="QMenu" name="menuDebug">
+        <property name="title">
+          <string>Debug</string>
+        </property>
+        <addaction name="actionShowChunkBoundaries"/>
+      </widget>
       <addaction name="menuAutomaton"/>
+      <addaction name="menuDebug"/>
     </widget>
     <widget class="QStatusBar" name="statusBar"/>
     <action name="actionNextGeneration">
@@ -102,6 +109,14 @@
     <action name="actionReset">
       <property name="text">
         <string>Reset</string>
+      </property>
+    </action>
+    <action name="actionShowChunkBoundaries">
+      <property name="checkable">
+        <bool>true</bool>
+      </property>
+      <property name="text">
+        <string>Show chunk boundaries</string>
       </property>
     </action>
   </widget>

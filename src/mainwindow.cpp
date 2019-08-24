@@ -7,6 +7,7 @@
 #include "ui_mainwindow.h"
 
 #include "Chunk.h"
+#include "GraphicsProperties.h"
 #include "Topology.h"
 #include "Neighbourhood.h"
 
@@ -37,6 +38,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
   connect(ui_->actionPlay, &QAction::triggered, this, &MainWindow::play);
   connect(ui_->actionPause, &QAction::triggered, this, &MainWindow::pause);
   connect(ui_->actionReset, &QAction::triggered, this, &MainWindow::reset);
+  connect(ui_->actionShowChunkBoundaries, &QAction::triggered, this, &MainWindow::toggleChunkBoxes);
   
   ui_->actionPause->setEnabled(false);
   connect(tickTimer_, &QTimer::timeout, this, &MainWindow::nextGeneration);
@@ -117,6 +119,11 @@ void MainWindow::reset() {
   automaton_->reset();
   automaton_->chunkArray().insertOrNoop(0, 0);
   updateStatusBar();
+}
+
+void MainWindow::toggleChunkBoxes() {
+  GraphicsProperties::instance().showChunkBoxes = !GraphicsProperties::instance().showChunkBoxes;
+  scene_->update();
 }
 
 void MainWindow::updateStatusBar() const {

@@ -42,6 +42,8 @@ private slots:
   void pause();
   void reset();
   
+  void toggleChunkBoxes();
+  
 private:
   void updateStatusBar() const; // Update "Generation: X" in the status bar
   
