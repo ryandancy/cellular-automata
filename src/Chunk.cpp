@@ -13,7 +13,8 @@ void Chunk::checkInBounds(int x, int y) {
   }
 }
 
-void Chunk::updateNewCell(const Ruleset& ruleset, Neighbourhood& neighbourhood, int x, int y) {
+void Chunk::updateNewCell(const Ruleset& ruleset, Neighbourhood& neighbourhood, int x, int y, const Side& side) {
+  side.transform(x, y, CHUNK_SIZE, CHUNK_SIZE);
   checkInBounds(x, y);
   unsigned int liveCount = neighbourhood.getLiveCount();
   if (cells_[x][y]) {
@@ -31,13 +32,13 @@ void Chunk::scanLine(const Ruleset& ruleset, Neighbourhood& neighbourhood, int& 
     do {
       neighbourhood.moveToSide(side.right());
       x++;
-      updateNewCell(ruleset, neighbourhood, x, y);
+      updateNewCell(ruleset, neighbourhood, x, y, side);
     } while (x < CHUNK_SIZE - 1);
   } else {
     do {
       neighbourhood.moveToSide(side.left());
       x--;
-      updateNewCell(ruleset, neighbourhood, x, y);
+      updateNewCell(ruleset, neighbourhood, x, y, side);
     } while (x > 0);
   }
 }
@@ -55,7 +56,7 @@ void Chunk::generate(const Ruleset& ruleset, Neighbourhood& neighbourhood, const
   while (y < CHUNK_SIZE - 1) {
     neighbourhood.moveToSide(side);
     y++;
-    updateNewCell(ruleset, neighbourhood, x, y);
+    updateNewCell(ruleset, neighbourhood, x, y, side);
     scanLine(ruleset, neighbourhood, x, y, side);
   }
 }

@@ -58,7 +58,8 @@ private:
   static void checkInBounds(int x, int y);
   
   // Update the cell at (x, y), assuming the neighbourhood is centred at (x, y), using the ruleset.
-  void updateNewCell(const Ruleset& ruleset, Neighbourhood& neighbourhood, int x, int y);
+  void updateNewCell(const Ruleset& ruleset, Neighbourhood& neighbourhood, int x, int y,
+      const Side& side = Side::BOTTOM);
   
   // Scan a single line left or right with reference to the optionally given side. Modifies x.
   void scanLine(const Ruleset& ruleset, Neighbourhood& neighbourhood, int& x, int y, const Side& side = Side::BOTTOM);
@@ -115,7 +116,7 @@ public:
   bool erase(int x, int y);
   
   // Iterators, iterating over pairs of coordinate pairs and pointers to corresponding Chunks
-  iterator begin() noexcept;
+  iterator begin() noexcept; // TODO remove these?
   iterator end() noexcept;
   const_iterator cbegin() const noexcept;
   const_iterator cend() const noexcept;
@@ -128,6 +129,8 @@ private:
   // Empty Chunk for use when the Topology specifies a chunk is to be treated as empty
   struct : public Chunk {
     using Chunk::Chunk;
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
     void generate(const Ruleset&, Neighbourhood&, const Side&, unsigned int) override {}
     void generate(const Ruleset&, Neighbourhood&) override {}
     void update() override {}
@@ -135,6 +138,7 @@ private:
     void setCell(int, int, bool) override {} // prevent emitting signals
     bool isEmpty() const noexcept override { return true; }
     bool isNextGenEmpty() const noexcept override { return true; }
+#pragma clang diagnostic pop
   } static EMPTY;
   
   std::unordered_map<std::pair<int, int>, Chunk*, pair_hash> map_;
