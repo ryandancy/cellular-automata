@@ -51,6 +51,7 @@ void Chunk::generate(const Ruleset& ruleset, Neighbourhood& neighbourhood, const
   int relStartX = x, relStartY = y;
   side.transform(relStartX, relStartY, CHUNK_SIZE, CHUNK_SIZE);
   neighbourhood.moveTo(chunkX, chunkY, relStartX, relStartY);
+  updateNewCell(ruleset, neighbourhood, x, y, side);
   
   scanLine(ruleset, neighbourhood, x, y, side);
   while (y < CHUNK_SIZE - 1) {
