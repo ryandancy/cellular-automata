@@ -4,7 +4,9 @@
 #include "Chunk.h"
 #include "ChunkGraphicsItem.h"
 
-AutomatonScene::AutomatonScene(Automaton& automaton, QWidget* parent) : QGraphicsScene(parent), automaton_(automaton) {}
+AutomatonScene::AutomatonScene(Automaton& automaton, QWidget* parent) : QGraphicsScene(parent), automaton_(automaton) {
+  setBackgroundBrush(Qt::white); // TODO let background colour be configured, also topology edge?
+}
 
 void AutomatonScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
   // Flip the cell with a left click
@@ -19,8 +21,14 @@ void AutomatonScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
   
   qreal relCellX = pos.x() - chunkX*ChunkGraphicsItem::SIZE;
   qreal relCellY = pos.y() - chunkY*ChunkGraphicsItem::SIZE;
-  if (relCellX < 0) relCellX += ChunkGraphicsItem::SIZE;
-  if (relCellY < 0) relCellY += ChunkGraphicsItem::SIZE;
+  if (relCellX < 0) {
+    relCellX += ChunkGraphicsItem::SIZE;
+    chunkX--;
+  }
+  if (relCellY < 0) {
+    relCellY += ChunkGraphicsItem::SIZE;
+    chunkY--;
+  }
   int cellX = (int) (relCellX / (ChunkGraphicsItem::SIZE / CHUNK_SIZE));
   int cellY = (int) (relCellY / (ChunkGraphicsItem::SIZE / CHUNK_SIZE));
   
