@@ -6,6 +6,7 @@
 
 #include <QGraphicsItem>
 #include <QMainWindow>
+#include <QSlider>
 #include <QTimer>
 #include <QWidget>
 
@@ -42,17 +43,21 @@ private slots:
   void pause();
   void reset();
   
+  void updatePlaySpeed(int value);
+  
   void toggleChunkBoxes();
   
 private:
   void updateStatusBar() const; // Update "Generation: X" in the status bar
   
-  static constexpr int PLAY_DELAY = 200; // TODO make this configurable
+  static constexpr int MAX_PLAY_DELAY = 400; // min is 0; time in ms between updates when playing
+  int playDelay_ = 200;
   
   Ui::MainWindow* ui_;
   AutomatonScene* scene_; // where we draw the actual automaton
   Automaton* automaton_; // the model itself
   QTimer* tickTimer_; // for playing
+  QSlider* speedSlider_; // for controlling play speed
   
   // Analogous to ChunkArray's map, but for ChunkGraphicsItems
   std::unordered_map<std::pair<int, int>, ChunkGraphicsItem*, pair_hash> chunkGIMap_;

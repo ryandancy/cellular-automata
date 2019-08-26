@@ -13,7 +13,7 @@
 
 // Dear future me who knows to avoid tight coupling and other cool software engineering patterns: I'm sorry
 
-constexpr int MainWindow::PLAY_DELAY;
+constexpr int MainWindow::MAX_PLAY_DELAY;
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainWindow), tickTimer_(new QTimer(this)),
     // TODO this is just a default - allow customization of topology and neighbourhood type
@@ -27,6 +27,15 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
   
   ui_->setupUi(this);
   QMainWindow::centralWidget()->layout()->setContentsMargins(0, 0, 0, 0); // make it flush
+  
+  // for some reason, adding a widget to the toolbar can't be done in Qt Designer, so here we are
+  speedSlider_ = new QSlider(Qt::Orientation::Horizontal, ui_->toolBar);
+  speedSlider_->setMinimum(0);
+  speedSlider_->setMaximum(1000);
+  // this is the inversion of the function delay = MAX_PLAY_DELAY(1 - value/1000)^2 used to calculate position
+  speedSlider_->setValue((int) (1000.0 * (1.0 - sqrt((double) playDelay_ / (double) MAX_PLAY_DELAY))));
+  ui_->toolBar->insertWidget(ui_->actionPause, speedSlider_);
+  connect(speedSlider_, &QSlider::valueChanged, this, &MainWindow::updatePlaySpeed);
   
   scene_ = new AutomatonScene(*automaton_, this);
   ui_->graphics->setScene(scene_);
@@ -56,6 +65,8 @@ MainWindow::~MainWindow() {
   tickTimer_->stop();
   delete tickTimer_;
   tickTimer_ = nullptr;
+  delete speedSlider_;
+  speedSlider_ = nullptr;
   delete automaton_;
   automaton_ = nullptr;
   delete scene_;
@@ -98,7 +109,7 @@ void MainWindow::nextGeneration() {
 }
 
 void MainWindow::play() {
-  tickTimer_->start(PLAY_DELAY);
+  tickTimer_->start(playDelay_);
   ui_->actionPlay->setEnabled(false);
   ui_->actionNextGeneration->setEnabled(false);
   ui_->actionPause->setEnabled(true);
@@ -119,6 +130,13 @@ void MainWindow::reset() {
   automaton_->reset();
   automaton_->chunkArray().insertOrNoop(0, 0);
   updateStatusBar();
+}
+
+void MainWindow::updatePlaySpeed(int value) { // 0 <= value <= 1000
+  // We decompose according to the following formula: delay = MAX_PLAY_DELAY(1 - value/1000)^2
+  double valuePct = value / 1000.0;
+  playDelay_ = (int) (MAX_PLAY_DELAY*(1-valuePct)*(1-valuePct));
+  tickTimer_->setInterval(playDelay_);
 }
 
 void MainWindow::toggleChunkBoxes() {
