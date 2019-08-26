@@ -19,9 +19,9 @@ void ChunkGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*
   const QRectF& bounds = boundingRect();
   
   // draw all cells as dead first
-  painter->setBrush(deadBrush());
+  painter->setBrush(GraphicsProperties::instance().deadColor());
   if (GraphicsProperties::instance().showChunkBoxes) {
-    painter->setPen(Qt::black);
+    painter->setPen(GraphicsProperties::instance().liveColor());
   } else {
     painter->setPen(Qt::transparent); // no outline
   }
@@ -31,8 +31,8 @@ void ChunkGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*
   if (cells_ == nullptr) return;
   
   // draw live cells
-  painter->setBrush(liveBrush());
-  painter->setPen(Qt::white); // cool cell separators!
+  painter->setBrush(GraphicsProperties::instance().liveColor());
+  painter->setPen(GraphicsProperties::instance().deadColor()); // cool cell separators!
   qreal cellSize = SIZE / CHUNK_SIZE;
   for (int x = 0; x < CHUNK_SIZE; x++) {
     for (int y = 0; y < CHUNK_SIZE; y++) {
@@ -47,16 +47,4 @@ void ChunkGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*
 void ChunkGraphicsItem::updateCells(bool (* newCells)[CHUNK_SIZE]) {
   cells_ = newCells; // wtf? why does newCells behave as bool(*)[C_S] when it's declared as bool[C_S][C_S]?
   update();
-}
-
-const QBrush& ChunkGraphicsItem::liveBrush() const {
-  // this method and ChunkGraphicsItem::deadBrush() are just wrappers for static const local variables
-  // used in order to delay initialization so that if the constructor throws the exception can be caught
-  static const QBrush LIVE_BRUSH(Qt::black); // dead cells are black, currently
-  return LIVE_BRUSH;
-}
-
-const QBrush& ChunkGraphicsItem::deadBrush() const {
-  static const QBrush DEAD_BRUSH(Qt::white); // dead cells are white, currently
-  return DEAD_BRUSH;
 }

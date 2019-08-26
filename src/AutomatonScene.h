@@ -14,6 +14,9 @@ class AutomatonScene : public QGraphicsScene {
 public:
   explicit AutomatonScene(Automaton& automaton, QWidget* parent = nullptr);
   
+  // Update the background colour (and (eventually) the topology edge colour).
+  void updateBackground();
+  
 protected:
   void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
   

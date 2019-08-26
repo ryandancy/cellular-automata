@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
     automaton_(new Automaton(new UnboundedTopology(),
         new MooreNeighbourhoodType(1))) {
   
-  // set default automaton rules for Conway's Game of Life - TODO allow customization
+  // set default automaton rules for Conway's Game of Life - TODO add "presets" of rule sets
   automaton_->ruleset().setBornWith(3, true);
   automaton_->ruleset().setSurvivesWith(2, true);
   automaton_->ruleset().setSurvivesWith(3, true);
@@ -51,6 +51,31 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
   connect(ui_->actionChangeRules, &QAction::triggered, this, &MainWindow::launchChangeRulesDialog);
   connect(ui_->actionShowChunkBoundaries, &QAction::triggered, this, &MainWindow::toggleChunkBoxes);
   
+  // make all the theme actions mutually exclusive via a QActionGroup
+  themeGroup_ = new QActionGroup(this);
+  themeGroup_->addAction(ui_->actionThemeLight);
+  themeGroup_->addAction(ui_->actionThemeDark);
+  themeGroup_->addAction(ui_->actionThemeHacker);
+  themeGroup_->addAction(ui_->actionThemeCanadian);
+  themeGroup_->addAction(ui_->actionThemeViolet);
+  themeGroup_->setEnabled(true);
+  
+  connect(ui_->actionThemeLight, &QAction::triggered, this, [this] () {
+    setTheme(GraphicsProperties::Theme::LIGHT);
+  });
+  connect(ui_->actionThemeDark, &QAction::triggered, this, [this] () {
+    setTheme(GraphicsProperties::Theme::DARK);
+  });
+  connect(ui_->actionThemeHacker, &QAction::triggered, this, [this] () {
+    setTheme(GraphicsProperties::Theme::HACKER);
+  });
+  connect(ui_->actionThemeCanadian, &QAction::triggered, this, [this] () {
+    setTheme(GraphicsProperties::Theme::CANADIAN);
+  });
+  connect(ui_->actionThemeViolet, &QAction::triggered, this, [this] () {
+    setTheme(GraphicsProperties::Theme::VIOLET);
+  });
+  
   ui_->actionPause->setEnabled(false);
   connect(tickTimer_, &QTimer::timeout, this, &MainWindow::nextGeneration);
   
@@ -69,6 +94,8 @@ MainWindow::~MainWindow() {
   tickTimer_ = nullptr;
   delete speedSlider_;
   speedSlider_ = nullptr;
+  delete themeGroup_;
+  themeGroup_ = nullptr;
   delete automaton_;
   automaton_ = nullptr;
   delete scene_;
@@ -152,6 +179,12 @@ void MainWindow::launchChangeRulesDialog() {
 
 void MainWindow::toggleChunkBoxes() {
   GraphicsProperties::instance().showChunkBoxes = !GraphicsProperties::instance().showChunkBoxes;
+  scene_->update();
+}
+
+void MainWindow::setTheme(GraphicsProperties::Theme theme) {
+  GraphicsProperties::instance().setTheme(theme);
+  scene_->updateBackground();
   scene_->update();
 }
 

@@ -93,8 +93,19 @@
         </property>
         <addaction name="actionChangeRules"/>
       </widget>
+      <widget class="QMenu" name="menuTheme">
+        <property name="title">
+          <string>Theme</string>
+        </property>
+        <addaction name="actionThemeLight"/>
+        <addaction name="actionThemeDark"/>
+        <addaction name="actionThemeHacker"/>
+        <addaction name="actionThemeCanadian"/>
+        <addaction name="actionThemeViolet"/>
+      </widget>
       <addaction name="menuAutomaton"/>
       <addaction name="menuSettings"/>
+      <addaction name="menuTheme"/>
       <addaction name="menuDebug"/>
     </widget>
     <widget class="QStatusBar" name="statusBar"/>
@@ -163,6 +174,64 @@
       </property>
       <property name="shortcut">
         <string>Ctrl+R</string>
+      </property>
+    </action>
+    <action name="actionThemeLight">
+      <property name="checkable">
+        <bool>true</bool>
+      </property>
+      <property name="checked">
+        <bool>true</bool>
+      </property>
+      <property name="text">
+        <string>Light</string>
+      </property>
+      <property name="shortcut">
+        <string>Ctrl+1</string>
+      </property>
+    </action>
+    <action name="actionThemeDark">
+      <property name="checkable">
+        <bool>true</bool>
+      </property>
+      <property name="text">
+        <string>Dark</string>
+      </property>
+      <property name="shortcut">
+        <string>Ctrl+2</string>
+      </property>
+    </action>
+    <action name="actionThemeHacker">
+      <property name="checkable">
+        <bool>true</bool>
+      </property>
+      <property name="text">
+        <string>Hacker</string>
+      </property>
+      <property name="shortcut">
+        <string>Ctrl+3</string>
+      </property>
+    </action>
+    <action name="actionThemeCanadian">
+      <property name="checkable">
+        <bool>true</bool>
+      </property>
+      <property name="text">
+        <string>Canadian</string>
+      </property>
+      <property name="shortcut">
+        <string>Ctrl+4</string>
+      </property>
+    </action>
+    <action name="actionThemeViolet">
+      <property name="checkable">
+        <bool>true</bool>
+      </property>
+      <property name="text">
+        <string>Violet</string>
+      </property>
+      <property name="shortcut">
+        <string>Ctrl+5</string>
       </property>
     </action>
   </widget>

@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <utility>
 
+#include <QActionGroup>
 #include <QGraphicsItem>
 #include <QMainWindow>
 #include <QSlider>
@@ -13,6 +14,7 @@
 #include "Automaton.h"
 #include "AutomatonScene.h"
 #include "ChunkGraphicsItem.h"
+#include "GraphicsProperties.h"
 #include "util.h"
 
 // TODO Separate UI from model via file structure, also figure out namespaces
@@ -49,6 +51,8 @@ private slots:
   void toggleChunkBoxes();
   
 private:
+  void setTheme(GraphicsProperties::Theme theme);
+  
   void updateStatusBar() const; // Update "Generation: X" in the status bar
   
   static constexpr int MAX_PLAY_DELAY = 400; // min is 0; time in ms between updates when playing
@@ -59,6 +63,7 @@ private:
   Automaton* automaton_; // the model itself
   QTimer* tickTimer_; // for playing
   QSlider* speedSlider_; // for controlling play speed
+  QActionGroup* themeGroup_; // make the theme actions mutually exclusive
   
   // Analogous to ChunkArray's map, but for ChunkGraphicsItems
   std::unordered_map<std::pair<int, int>, ChunkGraphicsItem*, pair_hash> chunkGIMap_;

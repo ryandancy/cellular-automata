@@ -3,9 +3,15 @@
 #include "AutomatonScene.h"
 #include "Chunk.h"
 #include "ChunkGraphicsItem.h"
+#include "GraphicsProperties.h"
 
 AutomatonScene::AutomatonScene(Automaton& automaton, QWidget* parent) : QGraphicsScene(parent), automaton_(automaton) {
-  setBackgroundBrush(Qt::white); // TODO let background colour be configured, also topology edge?
+  updateBackground();
+}
+
+void AutomatonScene::updateBackground() {
+  // TODO draw topology edge
+  setBackgroundBrush(GraphicsProperties::instance().deadColor());
 }
 
 void AutomatonScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
