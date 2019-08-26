@@ -10,6 +10,7 @@
 #include "GraphicsProperties.h"
 #include "Topology.h"
 #include "Neighbourhood.h"
+#include "RulesDialog.h"
 
 // Dear future me who knows to avoid tight coupling and other cool software engineering patterns: I'm sorry
 
@@ -47,6 +48,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
   connect(ui_->actionPlay, &QAction::triggered, this, &MainWindow::play);
   connect(ui_->actionPause, &QAction::triggered, this, &MainWindow::pause);
   connect(ui_->actionReset, &QAction::triggered, this, &MainWindow::reset);
+  connect(ui_->actionChangeRules, &QAction::triggered, this, &MainWindow::launchChangeRulesDialog);
   connect(ui_->actionShowChunkBoundaries, &QAction::triggered, this, &MainWindow::toggleChunkBoxes);
   
   ui_->actionPause->setEnabled(false);
@@ -137,6 +139,15 @@ void MainWindow::updatePlaySpeed(int value) { // 0 <= value <= 1000
   double valuePct = value / 1000.0;
   playDelay_ = (int) (MAX_PLAY_DELAY*(1-valuePct)*(1-valuePct));
   tickTimer_->setInterval(playDelay_);
+}
+
+void MainWindow::launchChangeRulesDialog() {
+  if (tickTimer_->isActive()) {
+    pause();
+  }
+  RulesDialog dialog(automaton_->ruleset(), this);
+  dialog.setModal(true);
+  dialog.exec();
 }
 
 void MainWindow::toggleChunkBoxes() {

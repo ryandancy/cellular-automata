@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>RulesDialog</class>
+  <widget class="QDialog" name="RulesDialog">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>400</width>
+        <height>400</height>
+      </rect>
+    </property>
+    <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+      </sizepolicy>
+    </property>
+    <property name="windowTitle">
+      <string>Change Rules</string>
+    </property>
+    <widget class="QWidget" name="centralWidget" native="true">
+      <property name="geometry">
+        <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>400</width>
+          <height>400</height>
+        </rect>
+      </property>
+      <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+        </sizepolicy>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+          <widget class="QGroupBox" name="bornGroupBox">
+            <property name="title">
+              <string>A dead cell becomes alive with this many neighbours...</string>
+            </property>
+          </widget>
+        </item>
+        <item>
+          <widget class="QGroupBox" name="survivesGroupBox">
+            <property name="title">
+              <string>A live cell stays alive with this many neighbours...</string>
+            </property>
+          </widget>
+        </item>
+      </layout>
+    </widget>
+  </widget>
+  <resources/>
+  <connections/>
+</ui>

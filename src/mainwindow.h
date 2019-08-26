@@ -42,8 +42,9 @@ private slots:
   void play();
   void pause();
   void reset();
-  
   void updatePlaySpeed(int value);
+  
+  void launchChangeRulesDialog();
   
   void toggleChunkBoxes();
   
