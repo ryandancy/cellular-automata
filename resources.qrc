@@ -1,0 +1,7 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource prefix="/images">
+    <file alias="von-neumann-neighbourhood.svg">resources/von-neumann-neighbourhood.svg</file>
+    <file alias="moore-neighbourhood.svg">resources/moore-neighbourhood.svg</file>
+  </qresource>
+</RCC>

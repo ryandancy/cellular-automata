@@ -92,12 +92,15 @@ public:
   virtual Neighbourhood* makeNeighbourhood(ChunkArray& chunkArray) const = 0;
   
   // Get the total number of cells in Neighbourhoods of this type.
-  unsigned int getNumCells() const;
+  unsigned int getNumCells() const noexcept;
   
   // Get the maximum distance at which the centre cell in the Neighbourhood could possibly be affected by
   // a cell at this distance. Used to determine how far into empty chunks to evaluate - a cell in an empty chunk
   // is evaluated if both its x and y coordinates are no more than this far from a non-empty chunk.
-  int getAffectingDistance() const;
+  int getAffectingDistance() const noexcept;
+  
+  // Get the radius of the neighbourhood. This is the same as getAffectingDistance() but semantically different.
+  int getRadius() const noexcept;
   
   // Clone method for polymorphic copying.
   virtual NeighbourhoodType* clone() const = 0;
@@ -105,7 +108,8 @@ public:
   virtual ~NeighbourhoodType() = default; // prevent memory leaks! save lives!
   
 protected:
-  NeighbourhoodType(unsigned int numCells, int affectingDistance);
+  NeighbourhoodType(unsigned int numCells, int affectingDistance, int radius);
+  const int radius_;
   
 private:
   const unsigned int numCells_;
@@ -128,9 +132,6 @@ public:
   Neighbourhood* makeNeighbourhood(ChunkArray& chunkArray) const override;
   
   MooreNeighbourhoodType* clone() const override;
-
-protected:
-  const int radius_;
 };
 
 // A Moore neighbourhood includes diagonal adjacencies. It includes all cells in a square of side length 2r+1
@@ -148,7 +149,7 @@ protected:
   // Regenerate the live count.
   void reinitialize() override;
   
-  // Update the live count right, left, or down.
+  // Update the live count right, left, up, or down.
   void translateRight() override;
   void translateLeft() override;
   void translateDown() override;
@@ -173,9 +174,6 @@ public:
   Neighbourhood* makeNeighbourhood(ChunkArray& chunkArray) const override;
   
   VonNeumannNeighbourhoodType* clone() const override;
-  
-protected:
-  const int radius_;
 };
 
 // A von Neumann neighbourhood does not include diagonal adjacencies. In my interpretation, it resembles a square on its
@@ -192,7 +190,7 @@ protected:
   // Regenerate the live count.
   void reinitialize() override;
   
-  // Update the live count left, right, or down.
+  // Update the live count left, right, up, or down.
   void translateRight() override;
   void translateLeft() override;
   void translateDown() override;

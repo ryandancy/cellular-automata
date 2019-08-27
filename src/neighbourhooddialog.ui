@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>NeighbourhoodDialog</class>
+  <widget class="QDialog" name="NeighbourhoodDialog">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>500</width>
+        <height>220</height>
+      </rect>
+    </property>
+    <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+      </sizepolicy>
+    </property>
+    <property name="windowTitle">
+      <string>Change Neighbourhood Type</string>
+    </property>
+    <widget class="QWidget" name="centralWidget" native="true">
+      <property name="geometry">
+        <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>500</width>
+          <height>220</height>
+        </rect>
+      </property>
+      <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+        </sizepolicy>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="1">
+          <layout class="QVBoxLayout" name="vonNeumannVLayout">
+            <item>
+              <widget class="QLabel" name="vonNeumannImg">
+                <property name="text">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+                    &lt;img src=&quot;:/images/von-neumann-neighbourhood.svg&quot;/&gt;
+                    &lt;/body&gt;&lt;/html&gt;
+                  </string>
+                </property>
+                <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <widget class="QRadioButton" name="vonNeumannButton">
+                <property name="text">
+                  <string>Von Neumann neighbourhood</string>
+                </property>
+              </widget>
+            </item>
+          </layout>
+        </item>
+        <item row="0" column="0">
+          <layout class="QVBoxLayout" name="mooreVLayout">
+            <property name="spacing">
+              <number>-1</number>
+            </property>
+            <property name="sizeConstraint">
+              <enum>QLayout::SetDefaultConstraint</enum>
+            </property>
+            <item>
+              <widget class="QLabel" name="mooreImg">
+                <property name="enabled">
+                  <bool>true</bool>
+                </property>
+                <property name="text">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+                    &lt;img src=&quot;:/images/moore-neighbourhood.svg&quot;/&gt;
+                    &lt;/body&gt;&lt;/html&gt;
+                  </string>
+                </property>
+                <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <widget class="QRadioButton" name="mooreButton">
+                <property name="text">
+                  <string>Moore neighbourhood</string>
+                </property>
+              </widget>
+            </item>
+          </layout>
+        </item>
+        <item row="1" column="0" colspan="2">
+          <widget class="QSpinBox" name="radiusSpinbox">
+            <property name="alignment">
+              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="suffix">
+              <string> cell(s)</string>
+            </property>
+            <property name="prefix">
+              <string>Radius: </string>
+            </property>
+            <property name="minimum">
+              <number>1</number>
+            </property>
+            <property name="maximum">
+              <number>19</number>
+            </property>
+          </widget>
+        </item>
+        <item row="2" column="0" colspan="2">
+          <widget class="QDialogButtonBox" name="buttonBox">
+            <property name="toolTip">
+              <string/>
+            </property>
+            <property name="standardButtons">
+              <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+            </property>
+            <property name="centerButtons">
+              <bool>false</bool>
+            </property>
+          </widget>
+        </item>
+      </layout>
+    </widget>
+  </widget>
+  <resources/>
+  <connections/>
+</ui>

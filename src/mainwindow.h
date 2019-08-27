@@ -47,6 +47,7 @@ private slots:
   void updatePlaySpeed(int value);
   
   void launchChangeRulesDialog();
+  void launchChangeNeighbourhoodTypeDialog();
   
   void toggleChunkBoxes();
   

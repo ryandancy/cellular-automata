@@ -170,15 +170,19 @@ bool Neighbourhood::getCell(int dx, int dy) const {
 
 // NeighbourhoodType
 
-NeighbourhoodType::NeighbourhoodType(unsigned int numCells, int affectingDistance)
-    : numCells_(numCells), affectingDistance_(affectingDistance) {}
+NeighbourhoodType::NeighbourhoodType(unsigned int numCells, int affectingDistance, int radius)
+    : numCells_(numCells), affectingDistance_(affectingDistance), radius_(radius) {}
 
-unsigned int NeighbourhoodType::getNumCells() const {
+unsigned int NeighbourhoodType::getNumCells() const noexcept {
   return numCells_;
 }
 
-int NeighbourhoodType::getAffectingDistance() const {
+int NeighbourhoodType::getAffectingDistance() const noexcept {
   return affectingDistance_;
+}
+
+int NeighbourhoodType::getRadius() const noexcept {
+  return radius_;
 }
 
 // Helper function for error checking
@@ -194,7 +198,7 @@ namespace { // local to this file
 
 // Note: the number of cells in a Moore neighbourhood of radius r is (2r+1)^2 - 1
 MooreNeighbourhoodType::MooreNeighbourhoodType(int radius)
-    : NeighbourhoodType((2*radius+1)*(2*radius+1) - 1, radius), radius_(radius) {
+    : NeighbourhoodType((2*radius+1)*(2*radius+1) - 1, radius, radius) {
   checkRadius(radius_);
 }
 
@@ -262,7 +266,7 @@ void MooreNeighbourhood::translateUp() {
 
 // Note: the number of cells in a von Neumann neighbourhood of radius r is 2r(r+1)
 VonNeumannNeighbourhoodType::VonNeumannNeighbourhoodType(int radius)
-    : NeighbourhoodType(2*radius*(radius+1), radius), radius_(radius) {
+    : NeighbourhoodType(2*radius*(radius+1), radius, radius) {
   checkRadius(radius_);
 }
 

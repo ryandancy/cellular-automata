@@ -92,6 +92,7 @@
           <string>Settings</string>
         </property>
         <addaction name="actionChangeRules"/>
+        <addaction name="actionChangeNeighbourhood"/>
       </widget>
       <widget class="QMenu" name="menuTheme">
         <property name="title">
@@ -232,6 +233,14 @@
       </property>
       <property name="shortcut">
         <string>Ctrl+5</string>
+      </property>
+    </action>
+    <action name="actionChangeNeighbourhood">
+      <property name="text">
+        <string>Change neighbourhood type...</string>
+      </property>
+      <property name="shortcut">
+        <string>Ctrl+T</string>
       </property>
     </action>
   </widget>

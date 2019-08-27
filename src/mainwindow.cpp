@@ -10,6 +10,7 @@
 #include "GraphicsProperties.h"
 #include "Topology.h"
 #include "Neighbourhood.h"
+#include "NeighbourhoodDialog.h"
 #include "RulesDialog.h"
 
 // Dear future me who knows to avoid tight coupling and other cool software engineering patterns: I'm sorry
@@ -49,6 +50,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
   connect(ui_->actionPause, &QAction::triggered, this, &MainWindow::pause);
   connect(ui_->actionReset, &QAction::triggered, this, &MainWindow::reset);
   connect(ui_->actionChangeRules, &QAction::triggered, this, &MainWindow::launchChangeRulesDialog);
+  connect(ui_->actionChangeNeighbourhood, &QAction::triggered, this, &MainWindow::launchChangeNeighbourhoodTypeDialog);
   connect(ui_->actionShowChunkBoundaries, &QAction::triggered, this, &MainWindow::toggleChunkBoxes);
   
   // make all the theme actions mutually exclusive via a QActionGroup
@@ -173,6 +175,15 @@ void MainWindow::launchChangeRulesDialog() {
     pause();
   }
   RulesDialog dialog(automaton_->ruleset(), this);
+  dialog.setModal(true);
+  dialog.exec();
+}
+
+void MainWindow::launchChangeNeighbourhoodTypeDialog() {
+  if (tickTimer_->isActive()) {
+    pause();
+  }
+  NeighbourhoodDialog dialog(automaton_->ruleset().getNeighbourhoodType(), automaton_, this);
   dialog.setModal(true);
   dialog.exec();
 }
