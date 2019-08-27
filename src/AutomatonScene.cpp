@@ -1,3 +1,4 @@
+#include <QGraphicsRectItem>
 #include <QPointF>
 
 #include "AutomatonScene.h"
@@ -10,8 +11,18 @@ AutomatonScene::AutomatonScene(Automaton& automaton, QWidget* parent) : QGraphic
 }
 
 void AutomatonScene::updateBackground() {
-  // TODO draw topology edge
-  setBackgroundBrush(GraphicsProperties::instance().deadColor());
+  if (automaton_.chunkArray().topology().bounded()) {
+    setBackgroundBrush(GraphicsProperties::instance().outOfBoundsColor());
+    auto validRect = new QGraphicsRectItem(0.0, 0.0,
+        ChunkGraphicsItem::SIZE * automaton_.chunkArray().topology().width(),
+        ChunkGraphicsItem::SIZE * automaton_.chunkArray().topology().height());
+    validRect->setBrush(GraphicsProperties::instance().deadColor());
+    validRect->setPen(Qt::NoPen);
+    validRect->setZValue(-1.0); // behind all the default z 0.0 stuff
+    addItem(validRect);
+  } else {
+    setBackgroundBrush(GraphicsProperties::instance().deadColor());
+  }
 }
 
 void AutomatonScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {

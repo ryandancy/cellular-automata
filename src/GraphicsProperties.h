@@ -20,10 +20,10 @@ public:
   };
   
   void setTheme(Theme theme);
-  Theme getTheme() const noexcept;
   
-  const QColor& deadColor() const noexcept;
-  const QColor& liveColor() const noexcept;
+  const QColor& deadColor() const noexcept; // the colour of dead cells and the background
+  const QColor& liveColor() const noexcept; // the colour of live cells
+  const QColor& outOfBoundsColor() const noexcept; // the colour of out-of-bound chunks
   
 private:
   GraphicsProperties();
@@ -31,6 +31,7 @@ private:
   Theme theme_;
   QColor deadColor_;
   QColor liveColor_;
+  QColor outOfBoundsColor_;
 };
 
 #endif //GAME_OF_LIFE_GRAPHICSPROPERTIES_H

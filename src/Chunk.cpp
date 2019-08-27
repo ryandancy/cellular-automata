@@ -123,6 +123,10 @@ ChunkArray::~ChunkArray() {
   }
 }
 
+Topology& ChunkArray::topology() const noexcept {
+  return *topology_;
+}
+
 ChunkArray::size_type ChunkArray::size() {
   return map_.size();
 }

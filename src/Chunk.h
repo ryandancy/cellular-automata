@@ -91,6 +91,9 @@ public:
   
   ~ChunkArray() override; // we need to clear the map; QObject disables copy/move constructors/assignment operators
   
+  // Get a reference to this ChunkArray's topology.
+  Topology& topology() const noexcept;
+  
   // How many Chunks are stored?
   size_type size();
   

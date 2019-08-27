@@ -15,6 +15,10 @@ public:
   virtual bool transform(int& x, int& y) const = 0;
   
   virtual ~Topology() = default;
+  
+  virtual bool bounded() const noexcept; // Does the topology have an edge?
+  virtual int width() const noexcept; // If bounded(), get the width in chunks. Else, get -1.
+  virtual int height() const noexcept; // If bounded(), get the height in chunks. Else, get -1.
 };
 
 // This is an abstract Topology with bounds, meaning it has a width and a height. Chunks are valid iff they are within
@@ -28,6 +32,11 @@ public:
   // Simply return whether 0 <= x <= width and 0 <= y <= height.
   bool valid(int x, int y) const override;
   
+  bool bounded() const noexcept override;
+  int width() const noexcept override;
+  int height() const noexcept override;
+  
+protected:
   // Note: width and height are signed to prevent headaches with arithmetic with signed coordinates
   const int width_; // The width of the boundary of the topology, in chunks
   const int height_; // The height of the boundary of the topology, in chunks
