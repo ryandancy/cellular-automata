@@ -11,28 +11,36 @@ RulesDialog::RulesDialog(Ruleset& ruleset, QWidget* parent) : QDialog(parent), u
   
   // add born/survives checkboxes
   unsigned int numCells = ruleset_.getNeighbourhoodType().getNumCells();
-  for (unsigned int numNeighbours = 1; numNeighbours <= numCells; numNeighbours++) {
-    auto bornCheckbox = new QCheckBox(QString::number(numNeighbours), this);
+  for (unsigned int numNeighbours = 0; numNeighbours <= numCells; numNeighbours++) {
     auto survivesCheckbox = new QCheckBox(QString::number(numNeighbours), this);
     
-    connect(bornCheckbox, &QCheckBox::stateChanged, this, [this, numNeighbours] (int value) {
-      setBornRule(numNeighbours, value == Qt::CheckState::Checked);
-    });
     connect(survivesCheckbox, &QCheckBox::stateChanged, this, [this, numNeighbours] (int value) {
       setSurvivesRule(numNeighbours, value == Qt::CheckState::Checked);
     });
     
-    bornCheckbox->setChecked(ruleset_.isBornWith(numNeighbours));
     survivesCheckbox->setChecked(ruleset_.survivesWith(numNeighbours));
     
-    unsigned int x = (numNeighbours - 1) % CHECKBOXES_PER_ROW;
-    unsigned int y = (numNeighbours - 1) / CHECKBOXES_PER_ROW;
+    unsigned int x = numNeighbours % CHECKBOXES_PER_ROW;
+    unsigned int y = numNeighbours / CHECKBOXES_PER_ROW;
     
-    bornGrid_->addWidget(bornCheckbox, (int) y, (int) x); // row, then column
     survivesGrid_->addWidget(survivesCheckbox, (int) y, (int) x);
-    
-    bornCheckboxes_.push_back(bornCheckbox);
     survivesCheckBoxes_.push_back(survivesCheckbox);
+    
+    if (numNeighbours > 0) { // don't allow a "born 0" rule - we can't support that
+      auto bornCheckbox = new QCheckBox(QString::number(numNeighbours), this);
+      
+      connect(bornCheckbox, &QCheckBox::stateChanged, this, [this, numNeighbours] (int value) {
+        setBornRule(numNeighbours, value == Qt::CheckState::Checked);
+      });
+      
+      bornCheckbox->setChecked(ruleset_.isBornWith(numNeighbours));
+      
+      x = (numNeighbours - 1) % CHECKBOXES_PER_ROW;
+      y = (numNeighbours - 1) / CHECKBOXES_PER_ROW;
+      
+      bornGrid_->addWidget(bornCheckbox, (int) y, (int) x); // row, then column
+      bornCheckboxes_.push_back(bornCheckbox);
+    }
   }
   
   ui_->bornGroupBox->setLayout(bornGrid_);
