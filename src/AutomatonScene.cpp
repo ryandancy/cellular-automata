@@ -11,11 +11,11 @@ AutomatonScene::AutomatonScene(Automaton& automaton, QWidget* parent) : QGraphic
 }
 
 void AutomatonScene::updateBackground() {
-  if (automaton_.chunkArray().topology().bounded()) {
+  if (automaton_.topology().bounded()) {
     setBackgroundBrush(GraphicsProperties::instance().outOfBoundsColor());
     auto validRect = new QGraphicsRectItem(0.0, 0.0,
-        ChunkGraphicsItem::SIZE * automaton_.chunkArray().topology().width(),
-        ChunkGraphicsItem::SIZE * automaton_.chunkArray().topology().height());
+        ChunkGraphicsItem::SIZE * automaton_.topology().width(),
+        ChunkGraphicsItem::SIZE * automaton_.topology().height());
     validRect->setBrush(GraphicsProperties::instance().deadColor());
     validRect->setPen(Qt::NoPen);
     validRect->setZValue(-1.0); // behind all the default z 0.0 stuff
@@ -35,6 +35,10 @@ void AutomatonScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
   // hopefully this takes into account scroll position? also hopefully we can scroll?
   int chunkX = (int) (pos.x() / ChunkGraphicsItem::SIZE);
   int chunkY = (int) (pos.y() / ChunkGraphicsItem::SIZE);
+  
+  if (!automaton_.topology().valid(chunkX, chunkY)) {
+    return; // don't process in cases where the topology wraps around
+  }
   
   qreal relCellX = pos.x() - chunkX*ChunkGraphicsItem::SIZE;
   qreal relCellY = pos.y() - chunkY*ChunkGraphicsItem::SIZE;

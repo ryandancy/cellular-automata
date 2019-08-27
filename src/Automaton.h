@@ -35,6 +35,9 @@ public:
   // Get the Ruleset managing the automaton. (What's an encapsulation? Why not just have them be public?)
   Ruleset& ruleset() noexcept;
   
+  // Get the Topology of the automaton.
+  Topology& topology() noexcept;
+  
 private:
   // Call the appropriate generation functions for the given chunk, which is assumed to be empty.
   void generateEmptyChunk(int x, int y, Chunk& chunk, Neighbourhood& neighbourhood, int affectingDistance);

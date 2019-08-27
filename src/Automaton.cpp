@@ -134,3 +134,7 @@ ChunkArray& Automaton::chunkArray() noexcept {
 Ruleset& Automaton::ruleset() noexcept {
   return ruleset_;
 }
+
+Topology& Automaton::topology() noexcept {
+  return chunkArray_.topology();
+}
