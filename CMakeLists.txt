@@ -18,7 +18,8 @@ add_executable(game_of_life main.cpp src/Chunk.cpp src/Chunk.h src/Side.cpp src/
         src/util.h src/Neighbourhood.cpp src/Neighbourhood.h src/Ruleset.cpp src/Ruleset.h src/Automaton.cpp
         src/Automaton.h src/mainwindow.h src/mainwindow.cpp src/ChunkGraphicsItem.cpp src/ChunkGraphicsItem.h
         src/AutomatonScene.cpp src/AutomatonScene.h src/GraphicsProperties.cpp src/GraphicsProperties.h
-        src/RulesDialog.cpp src/RulesDialog.h src/NeighbourhoodDialog.cpp src/NeighbourhoodDialog.h resources.qrc)
+        src/RulesDialog.cpp src/RulesDialog.h src/NeighbourhoodDialog.cpp src/NeighbourhoodDialog.h resources.qrc
+        src/TopologyDialog.cpp src/TopologyDialog.h)
 
 target_link_libraries(game_of_life Qt5::Core)
 target_link_libraries(game_of_life Qt5::Widgets)

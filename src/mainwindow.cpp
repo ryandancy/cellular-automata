@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <QAction>
+#include <QDialog>
 #include <QString>
 
 #include "mainwindow.h"
@@ -12,6 +13,7 @@
 #include "Neighbourhood.h"
 #include "NeighbourhoodDialog.h"
 #include "RulesDialog.h"
+#include "TopologyDialog.h"
 
 // Dear future me who knows to avoid tight coupling and other cool software engineering patterns: I'm sorry
 
@@ -38,11 +40,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
   ui_->toolBar->insertWidget(ui_->actionPause, speedSlider_);
   connect(speedSlider_, &QSlider::valueChanged, this, &MainWindow::updatePlaySpeed);
   
-  scene_ = new AutomatonScene(*automaton_, this);
+  scene_ = new AutomatonScene(automaton_, this);
   ui_->graphics->setScene(scene_);
   
-  connect(&automaton_->chunkArray(), &ChunkArray::chunkAdded, this, &MainWindow::addChunkGraphicsItem);
-  connect(&automaton_->chunkArray(), &ChunkArray::chunkRemoved, this, &MainWindow::removeChunkGraphicsItem);
+  connectAutomaton();
   
   connect(ui_->actionNextGeneration, &QAction::triggered, this, &MainWindow::nextGeneration);
   connect(ui_->actionPlay, &QAction::triggered, this, &MainWindow::play);
@@ -50,6 +51,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
   connect(ui_->actionReset, &QAction::triggered, this, &MainWindow::reset);
   connect(ui_->actionChangeRules, &QAction::triggered, this, &MainWindow::launchChangeRulesDialog);
   connect(ui_->actionChangeNeighbourhood, &QAction::triggered, this, &MainWindow::launchChangeNeighbourhoodTypeDialog);
+  connect(ui_->actionChangeTopology, &QAction::triggered, this, &MainWindow::launchChangeTopologyDialog);
   connect(ui_->actionShowChunkBoundaries, &QAction::triggered, this, &MainWindow::toggleChunkBoxes);
   
   // make all the theme actions mutually exclusive via a QActionGroup
@@ -154,9 +156,7 @@ void MainWindow::pause() {
 
 void MainWindow::reset() {
   // Stop the timer, reset the automaton, and re-add chunk (0, 0) to avoid bugging out
-  if (tickTimer_->isActive()) {
-    pause();
-  }
+  pauseIfRunning();
   automaton_->reset();
   automaton_->chunkArray().insertOrNoop(0, 0);
   updateStatusBar();
@@ -170,21 +170,33 @@ void MainWindow::updatePlaySpeed(int value) { // 0 <= value <= 1000
 }
 
 void MainWindow::launchChangeRulesDialog() {
-  if (tickTimer_->isActive()) {
-    pause();
-  }
+  pauseIfRunning();
   RulesDialog dialog(automaton_->ruleset(), this);
   dialog.setModal(true);
   dialog.exec();
 }
 
 void MainWindow::launchChangeNeighbourhoodTypeDialog() {
-  if (tickTimer_->isActive()) {
-    pause();
-  }
+  pauseIfRunning();
   NeighbourhoodDialog dialog(automaton_->ruleset().getNeighbourhoodType(), automaton_, this);
   dialog.setModal(true);
   dialog.exec();
+}
+
+void MainWindow::launchChangeTopologyDialog() {
+  pauseIfRunning();
+  TopologyDialog dialog(*automaton_, this);
+  connect(&dialog, &TopologyDialog::automatonUpdated, this, &MainWindow::updateAutomaton);
+  dialog.setModal(true);
+  dialog.exec();
+}
+
+void MainWindow::updateAutomaton(Automaton* newAutomaton) {
+  delete automaton_; // will remove all the ChunkGraphicsItems
+  automaton_ = newAutomaton;
+  scene_->updateAutomaton(automaton_);
+  connectAutomaton(); // *must* go before inserting any chunks
+  automaton_->chunkArray().insertOrNoop(0, 0); // prevent buggy behaviour when there's no chunks
 }
 
 void MainWindow::toggleChunkBoxes() {
@@ -196,6 +208,17 @@ void MainWindow::setTheme(GraphicsProperties::Theme theme) {
   GraphicsProperties::instance().setTheme(theme);
   scene_->updateBackground();
   scene_->update();
+}
+
+void MainWindow::connectAutomaton() {
+  connect(&automaton_->chunkArray(), &ChunkArray::chunkAdded, this, &MainWindow::addChunkGraphicsItem);
+  connect(&automaton_->chunkArray(), &ChunkArray::chunkRemoved, this, &MainWindow::removeChunkGraphicsItem);
+}
+
+void MainWindow::pauseIfRunning() {
+  if (tickTimer_->isActive()) {
+    pause();
+  }
 }
 
 void MainWindow::updateStatusBar() const {

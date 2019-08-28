@@ -3,8 +3,14 @@
 #include "Automaton.h"
 
 Automaton::Automaton(Topology* topology, NeighbourhoodType* initialNeighbourhoodType)
-    : chunkArray_(topology), ruleset_(initialNeighbourhoodType), generation_(0) {
+    : chunkArray_(topology), ruleset_(initialNeighbourhoodType) {
   if (topology == nullptr || initialNeighbourhoodType == nullptr) {
+    throw std::invalid_argument("Cannot initialize Automaton with a null pointer");
+  }
+}
+
+Automaton::Automaton(Topology* topology, Ruleset&& ruleset) : chunkArray_(topology), ruleset_(ruleset) {
+  if (topology == nullptr) {
     throw std::invalid_argument("Cannot initialize Automaton with a null pointer");
   }
 }

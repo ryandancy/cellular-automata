@@ -16,6 +16,10 @@ public:
   // Throw std::invalid_argument if either pointer is null.
   Automaton(Topology* topology, NeighbourhoodType* initialNeighbourhoodType);
   
+  // Initialize the Automaton with a given topology (fixed) and by moving from the given ruleset.
+  // Take ownership of the topology. Throw std::invalid_argument if the pointer is null.
+  Automaton(Topology* topology, Ruleset&& ruleset);
+  
   // Set a new neighbourhood type. Take ownership of it, so the user mustn't delete it.
   // Throw std::invalid_argument if it is null.
   void setNeighbourhoodType(NeighbourhoodType* neighbourhoodType);
@@ -44,7 +48,7 @@ private:
   
   ChunkArray chunkArray_;
   Ruleset ruleset_;
-  int generation_;
+  int generation_ = 0;
 };
 
 #endif //GAME_OF_LIFE_AUTOMATON_H

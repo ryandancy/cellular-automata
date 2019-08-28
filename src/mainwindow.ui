@@ -93,6 +93,7 @@
         </property>
         <addaction name="actionChangeRules"/>
         <addaction name="actionChangeNeighbourhood"/>
+        <addaction name="actionChangeTopology"/>
       </widget>
       <widget class="QMenu" name="menuTheme">
         <property name="title">
@@ -241,6 +242,14 @@
       </property>
       <property name="shortcut">
         <string>Ctrl+T</string>
+      </property>
+    </action>
+    <action name="actionChangeTopology">
+      <property name="text">
+        <string>Change topology...</string>
+      </property>
+      <property name="shortcut">
+        <string>Ctrl+Shift+T</string>
       </property>
     </action>
   </widget>

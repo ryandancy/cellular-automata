@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <utility>
 
+#include <QDebug>
 #include <QObject>
 
 #include "Neighbourhood.h"

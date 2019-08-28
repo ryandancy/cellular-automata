@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>TopologyDialog</class>
+  <widget class="QDialog" name="TopologyDialog">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>350</width>
+        <height>300</height>
+      </rect>
+    </property>
+    <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+      </sizepolicy>
+    </property>
+    <property name="windowTitle">
+      <string>Change Neighbourhood Type</string>
+    </property>
+    <widget class="QWidget" name="centralWidget" native="true">
+      <property name="geometry">
+        <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>350</width>
+          <height>280</height>
+        </rect>
+      </property>
+      <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+        </sizepolicy>
+      </property>
+      <property name="toolTip">
+        <string/>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+          <widget class="QLabel" name="warningLabel">
+            <property name="text">
+              <string>
+                &lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;
+                WARNING:&lt;/span&gt;Changing the topology will clear the grid.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
+              </string>
+            </property>
+            <property name="wordWrap">
+              <bool>true</bool>
+            </property>
+          </widget>
+        </item>
+        <item>
+          <widget class="QRadioButton" name="unboundedRadioButton">
+            <property name="text">
+              <string>Unbounded (Infinite)</string>
+            </property>
+          </widget>
+        </item>
+        <item>
+          <widget class="QLabel" name="unboundedLabel">
+            <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;An
+                infinite flat grid. Classic Life, all patterns will evolve normally. Infinite growth possible.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
+              </string>
+            </property>
+            <property name="wordWrap">
+              <bool>true</bool>
+            </property>
+            <property name="indent">
+              <number>20</number>
+            </property>
+          </widget>
+        </item>
+        <item>
+          <widget class="QRadioButton" name="fixedRadioButton">
+            <property name="text">
+              <string>Fixed size</string>
+            </property>
+          </widget>
+        </item>
+        <item>
+          <widget class="QLabel" name="fixedLabel">
+            <property name="text">
+              <string>
+                &lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;
+                A flat grid of fixed size. All cells beyond the grid will be treated as dead.&lt;/span&gt;&lt;/p&gt;
+                &lt;/body&gt;&lt;/html&gt;
+              </string>
+            </property>
+            <property name="wordWrap">
+              <bool>true</bool>
+            </property>
+            <property name="indent">
+              <number>20</number>
+            </property>
+          </widget>
+        </item>
+        <item>
+          <widget class="QRadioButton" name="wrappingRadioButton">
+            <property name="text">
+              <string>Wrapping (Torus)</string>
+            </property>
+          </widget>
+        </item>
+        <item>
+          <widget class="QLabel" name="wrappingLabel">
+            <property name="text">
+              <string>
+                &lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;
+                The grid wraps around at each edge, forming the topology of a torus.&lt;/span&gt;&lt;/p&gt;
+                &lt;/body&gt;&lt;/html&gt;
+              </string>
+            </property>
+            <property name="wordWrap">
+              <bool>true</bool>
+            </property>
+            <property name="indent">
+              <number>20</number>
+            </property>
+          </widget>
+        </item>
+        <item>
+          <layout class="QHBoxLayout" name="widthHeightLayout">
+            <item>
+              <widget class="QSpinBox" name="widthSpinbox">
+                <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                  </sizepolicy>
+                </property>
+                <property name="suffix">
+                  <string> cells</string>
+                </property>
+                <property name="prefix">
+                  <string>Width: </string>
+                </property>
+                <property name="minimum">
+                  <number>20</number>
+                </property>
+                <property name="maximum">
+                  <number>20000</number>
+                </property>
+                <property name="singleStep">
+                  <number>20</number>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <widget class="QSpinBox" name="heightSpinbox">
+                <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                  </sizepolicy>
+                </property>
+                <property name="suffix">
+                  <string> cells</string>
+                </property>
+                <property name="prefix">
+                  <string>Height: </string>
+                </property>
+                <property name="minimum">
+                  <number>20</number>
+                </property>
+                <property name="maximum">
+                  <number>20000</number>
+                </property>
+                <property name="singleStep">
+                  <number>20</number>
+                </property>
+              </widget>
+            </item>
+          </layout>
+        </item>
+      </layout>
+    </widget>
+    <widget class="QDialogButtonBox" name="buttonBox">
+      <property name="geometry">
+        <rect>
+          <x>0</x>
+          <y>270</y>
+          <width>351</width>
+          <height>32</height>
+        </rect>
+      </property>
+      <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      </property>
+    </widget>
+  </widget>
+  <resources/>
+  <connections/>
+</ui>

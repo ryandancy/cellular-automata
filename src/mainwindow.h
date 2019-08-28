@@ -19,7 +19,6 @@
 
 // TODO Separate UI from model via file structure, also figure out namespaces
 // TODO Put the model on a separate thread from the UI
-// TODO Allow customization of Topology + NeighbourhoodType
 // TODO Add "painting" live cells
 // TODO Allow scrolling beyond edge of ChunkGraphicsItems - https://stackoverflow.com/q/19207153?
 
@@ -39,6 +38,9 @@ public slots:
   void addChunkGraphicsItem(int x, int y);
   void removeChunkGraphicsItem(int x, int y);
   
+  // Handle all the messy parts of updating the automaton to a new one passed here.
+  void updateAutomaton(Automaton* newAutomaton);
+  
 private slots:
   void nextGeneration();
   void play();
@@ -48,12 +50,15 @@ private slots:
   
   void launchChangeRulesDialog();
   void launchChangeNeighbourhoodTypeDialog();
+  void launchChangeTopologyDialog();
   
   void toggleChunkBoxes();
   
 private:
   void setTheme(GraphicsProperties::Theme theme);
   
+  void connectAutomaton(); // setup connections between the MainWindow and automaton_
+  void pauseIfRunning();
   void updateStatusBar() const; // Update "Generation: X" in the status bar
   
   static constexpr int MAX_PLAY_DELAY = 400; // min is 0; time in ms between updates when playing

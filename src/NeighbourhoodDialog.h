@@ -14,6 +14,8 @@ namespace Ui {
 
 // A dialog in which the user can choose and customize a neighbourhood type.
 class NeighbourhoodDialog : public QDialog {
+  Q_OBJECT
+  
 public:
   NeighbourhoodDialog(NeighbourhoodType& current, Automaton* automaton, QWidget* parent = nullptr);
   ~NeighbourhoodDialog() override;
