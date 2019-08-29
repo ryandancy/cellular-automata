@@ -33,6 +33,12 @@ public:
   // Get the current generation. The first generation is 0.
   int generation() const noexcept;
   
+  // Get the total number of live cells in the automaton.
+  int population() const noexcept;
+  
+  // Add delta to the current population. If the population is brought to below 0, silently set it to 0.
+  void addToPopulation(int delta);
+  
   // Get the chunk array behind the automaton.
   ChunkArray& chunkArray() noexcept;
   
@@ -49,6 +55,7 @@ private:
   ChunkArray chunkArray_;
   Ruleset ruleset_;
   int generation_ = 0;
+  int population_ = 0;
 };
 
 #endif //GAME_OF_LIFE_AUTOMATON_H

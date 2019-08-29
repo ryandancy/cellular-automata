@@ -85,4 +85,9 @@ void AutomatonScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
   automaton_->chunkArray().insertOrNoop(chunkX, chunkY);
   Chunk& chunk = automaton_->chunkArray().at(chunkX, chunkY);
   chunk.setCell(cellX, cellY, !chunk.getCell(cellX, cellY));
+  
+  // Keep the automaton's population accurate
+  automaton_->addToPopulation(chunk.getCell(cellX, cellY) ? 1 : -1); // added or took away a cell
+  
+  emit cellUpdated(chunkX, chunkY, cellX, cellY);
 }

@@ -20,6 +20,7 @@
 // A "chunk" of cells which are all processed at once.
 // To update a cell, first call Chunk::generate(Ruleset&, Neighbourhood&) (or call the overloaded Side& version with
 // as many sides as needed), then call Chunk::update() to process the next generation.
+// TODO can we get any performance boost by somehow not having the virtual methods be virtual?
 class Chunk : public QObject {
   Q_OBJECT
   
@@ -48,6 +49,8 @@ public:
   
   virtual bool isEmpty() const noexcept; // Is the whole Chunk empty?
   virtual bool isNextGenEmpty() const noexcept; // Is the next generation currently empty? TODO necessary?
+  
+  virtual int population() const noexcept; // Get the total number of live cells in the chunk.
   
   const int chunkX, chunkY; // The coordinates of this Chunk.
   
@@ -134,7 +137,7 @@ public:
   // Erase all Chunks and clear the queue.
   void clear();
   
-  // Iterators, iterating over pairs of coordinate pairs and pointers to corresponding Chunks
+  // Iterators, iterating over pairs of coordinate pairs and pointers to corresponding Chunks.
   iterator begin() noexcept;
   iterator end() noexcept;
   

@@ -24,6 +24,10 @@ public:
   // Change the old automaton's reference for this one and update. Use when the old automaton pointer was invalidated.
   void updateAutomaton(Automaton* automaton);
   
+signals:
+  // Emitted when the user clicks on the specified cell.
+  void cellUpdated(int chunkX, int chunkY, int cellX, int cellY);
+  
 protected:
   void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
   

@@ -109,6 +109,10 @@ bool Chunk::isNextGenEmpty() const noexcept {
   return nextLiveCellCount_ == 0;
 }
 
+int Chunk::population() const noexcept {
+  return liveCellCount_;
+}
+
 // ChunkArray
 
 decltype(ChunkArray::EMPTY) ChunkArray::EMPTY(0, 0);

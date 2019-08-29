@@ -79,9 +79,11 @@ void Automaton::tick() {
   chunkArray_.setIgnoringQueueInsertions(false);
   chunkArray_.clearQueue();
   
-  // Update every chunk
+  // Update every chunk, calculate the population
+  population_ = 0;
   for (auto& chunkPair : chunkArray_) {
     chunkPair.second->update();
+    population_ += chunkPair.second->population();
   }
   
   // Remove isolated empty chunks and add empty chunks beside non-padded non-empty ones
@@ -127,10 +129,20 @@ void Automaton::tick() {
 void Automaton::reset() {
   chunkArray_.clear();
   generation_ = 0;
+  population_ = 0;
 }
 
 int Automaton::generation() const noexcept {
   return generation_;
+}
+
+int Automaton::population() const noexcept {
+  return population_;
+}
+
+void Automaton::addToPopulation(int delta) {
+  population_ += delta;
+  if (population_ < 0) population_ = 0; // erm
 }
 
 ChunkArray& Automaton::chunkArray() noexcept {

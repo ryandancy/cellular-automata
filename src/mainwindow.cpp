@@ -47,6 +47,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
   
   scene_ = new AutomatonScene(automaton_, this);
   ui_->graphics->setScene(scene_);
+  connect(scene_, &AutomatonScene::cellUpdated, this, &MainWindow::updateStatusBar);
   
   connectAutomaton();
   
@@ -244,5 +245,7 @@ void MainWindow::pauseIfRunning() {
 }
 
 void MainWindow::updateStatusBar() const {
-  statusBar()->showMessage(tr("Generation: ") + QString::number(automaton_->generation()));
+  statusBar()->showMessage(
+      tr("Generation:") + " " + QString::number(automaton_->generation()) + " | "
+      + tr("Population:") + " " + QString::number(automaton_->population()));
 }
