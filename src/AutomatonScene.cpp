@@ -25,6 +25,7 @@ void AutomatonScene::updateBackground() {
   
   if (automaton_->topology().bounded()) {
     setBackgroundBrush(GraphicsProperties::instance().outOfBoundsColor());
+    
     validRect_ = new QGraphicsRectItem(0.0, 0.0,
         ChunkGraphicsItem::SIZE * automaton_->topology().width(),
         ChunkGraphicsItem::SIZE * automaton_->topology().height());
@@ -32,8 +33,17 @@ void AutomatonScene::updateBackground() {
     validRect_->setPen(Qt::NoPen);
     validRect_->setZValue(-1.0); // behind all the default z 0.0 stuff
     addItem(validRect_);
+    
+    // allow scrolling one chunk past the edge
+    setSceneRect(-ChunkGraphicsItem::SIZE, -ChunkGraphicsItem::SIZE,
+        ChunkGraphicsItem::SIZE * (automaton_->topology().width() + 2),
+        ChunkGraphicsItem::SIZE * (automaton_->topology().height() + 2));
   } else {
     setBackgroundBrush(GraphicsProperties::instance().deadColor());
+    
+    // allow scrolling pretty much wherever
+    setSceneRect(-1000 * ChunkGraphicsItem::SIZE, -1000 * ChunkGraphicsItem::SIZE,
+        2000 * ChunkGraphicsItem::SIZE, 2000 * ChunkGraphicsItem::SIZE);
   }
 }
 

@@ -20,7 +20,8 @@
 constexpr int MainWindow::MAX_PLAY_DELAY;
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainWindow), tickTimer_(new QTimer(this)),
-    automaton_(new Automaton(new FixedTopology(2, 2),
+    // default is unbounded topology with radius-1 Moore neighbourhood (Life setup)
+    automaton_(new Automaton(new UnboundedTopology,
         new MooreNeighbourhoodType(1))) {
   
   // set default automaton rules for Conway's Game of Life - TODO add "presets" of rule sets
