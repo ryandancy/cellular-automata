@@ -1,4 +1,8 @@
+#include <array>
+#include <cstdio>
 #include <iostream>
+#include <memory>
+#include <string>
 
 #include <QAction>
 #include <QDialog>
@@ -79,6 +83,23 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui_(new Ui::MainW
   connect(ui_->actionThemeViolet, &QAction::triggered, this, [this] () {
     setTheme(GraphicsProperties::Theme::VIOLET);
   });
+
+#if defined(__APPLE__) && defined(__MACH__)
+  // Only on macOS - detect dark mode by calling system command, set to dark if in dark mode
+  // https://stackoverflow.com/a/478960
+  std::unique_ptr<FILE, decltype(&pclose)> pipe(popen("defaults read -g AppleInterfaceStyle", "r"), pclose);
+  if (pipe) { // otherwise we can't open - default to light
+    std::array<char, 128> buffer{};
+    std::string output;
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+      output += buffer.data();
+    }
+    if (output == "Dark\n") {
+      // cool it's in dark mode - set to dark theme
+      ui_->actionThemeDark->trigger();
+    }
+  }
+#endif
   
   ui_->actionPause->setEnabled(false);
   connect(tickTimer_, &QTimer::timeout, this, &MainWindow::nextGeneration);
