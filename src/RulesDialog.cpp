@@ -7,7 +7,9 @@ constexpr unsigned int RulesDialog::CHECKBOXES_PER_ROW;
 
 RulesDialog::RulesDialog(Ruleset& ruleset, QWidget* parent) : QDialog(parent), ui_(new Ui::RulesDialog),
     bornGrid_(new QGridLayout), survivesGrid_(new QGridLayout), ruleset_(ruleset) {
+  
   ui_->setupUi(this);
+  window()->setFixedSize(window()->width(), window()->height());
   
   // add born/survives checkboxes
   unsigned int numCells = ruleset_.getNeighbourhoodType().getNumCells();

@@ -5,7 +5,6 @@
 #include <QSpinBox>
 
 #include "Chunk.h"
-#include "Ruleset.h"
 #include "Topology.h"
 #include "TopologyDialog.h"
 #include "ui_topologydialog.h"
@@ -13,11 +12,11 @@
 // Note: much of the complexity here comes from us displaying the width/height to the user in cells, while
 // processing it in chunks, and so we have to fiddle with a factor of CHUNK_SIZE.
 
-// we use a pointer-to-pointer to update the pointer in MainWindow
 TopologyDialog::TopologyDialog(Automaton& automaton, QWidget* parent) : QDialog(parent),
     automaton_(automaton), ui_(new Ui::TopologyDialog) {
   
   ui_->setupUi(this);
+  window()->setFixedSize(window()->width(), window()->height()); // *sigh* won't work for dynamic screen sizes
   
   // make sure the spinboxes are up to date with CHUNK_SIZE
   ui_->widthSpinbox->setMinimum(CHUNK_SIZE);
@@ -79,13 +78,6 @@ void TopologyDialog::apply() {
   
   // update the automaton using the old automaton's ruleset
   emit automatonUpdated(new Automaton(newTopology, std::move(automaton_.ruleset())));
-  
-  // substitute the automaton
-//  delete *automaton_;
-//  *automaton_ = new Automaton(newTopology, std::move(ruleset));
-  
-  // we invalidated the automaton pointer in the AutomatonScene when we deleted *automaton_ - update it
-//  scene_.updateAutomaton(*automaton_);
   
   // close the window
   accept();

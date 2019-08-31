@@ -7,7 +7,9 @@
 NeighbourhoodDialog::NeighbourhoodDialog(NeighbourhoodType& current, Automaton* automaton, QWidget* parent)
     : QDialog(parent), current_(current), ui_(new Ui::NeighbourhoodDialog), automaton_(automaton),
     typeGroup_(new QButtonGroup(this)) {
+  
   ui_->setupUi(this);
+  window()->setFixedSize(window()->width(), window()->height());
   
   ui_->radiusSpinbox->setMaximum(CHUNK_SIZE-1); // above this probably won't work
   
